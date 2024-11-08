@@ -64,7 +64,7 @@ button {
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     width: 100%;
     font-family: inherit;
@@ -87,4 +87,33 @@ button:disabled {
         padding: 10px;
         max-height: 80vh;
     }
+}
+
+.tipo-usuario-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tipo-usuario-buttons button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.tipo-usuario-buttons button.selected {
+    border: 2px solid #4c5baf; /* Indica que está seleccionado */
+    border-radius: 50%;
+}
+
+.tipo-usuario-buttons button:hover {
+    transform: scale(1.1); /* Añade una pequeña animación al pasar el mouse */
+}
+
+.tipo-usuario-buttons img {
+    width: 50px;
+    height: 50px;
 }

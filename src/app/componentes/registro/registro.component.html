@@ -3,72 +3,53 @@
     <h2>Registro</h2>
 
     <label for="tipoUsuario">Tipo de usuario</label>
-    <select formControlName="tipoUsuario" (change)="tipoUsuario = registroForm.get('tipoUsuario')?.value">
-      <option value="paciente">Paciente</option>
-      <option value="especialista">Especialista</option>
-    </select>
+    <div class="tipo-usuario-buttons">
+      <button type="button" (click)="setTipoUsuario('paciente')" [class.selected]="registroForm.get('tipoUsuario')?.value === 'paciente'">
+        <img src="assets/paciente.png" alt="Paciente">
+      </button>
+      <button type="button" (click)="setTipoUsuario('especialista')" [class.selected]="registroForm.get('tipoUsuario')?.value === 'especialista'">
+        <img src="assets/doctor.png" alt="Especialista">
+      </button>
+    </div>
 
+    <!-- Campos comunes -->
     <label for="nombre">Nombre</label>
     <input type="text" formControlName="nombre" id="nombre" required>
-    <div *ngIf="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched" class="error">
-      <div *ngIf="registroForm.get('nombre')?.errors?.['required']">El nombre es requerido.</div>
-    </div>
-
     <label for="apellido">Apellido</label>
     <input type="text" formControlName="apellido" id="apellido" required>
-    <div *ngIf="registroForm.get('apellido')?.invalid && registroForm.get('apellido')?.touched" class="error">
-      <div *ngIf="registroForm.get('apellido')?.errors?.['required']">El apellido es requerido.</div>
-    </div>
-
     <label for="edad">Edad</label>
     <input type="number" formControlName="edad" id="edad" required>
-    <div *ngIf="registroForm.get('edad')?.invalid && registroForm.get('edad')?.touched" class="error">
-      <div *ngIf="registroForm.get('edad')?.errors?.['required']">La edad es requerida.</div>
-    </div>
-
     <label for="dni">DNI</label>
     <input type="text" formControlName="dni" id="dni" required>
-    <div *ngIf="registroForm.get('dni')?.invalid && registroForm.get('dni')?.touched" class="error">
-      <div *ngIf="registroForm.get('dni')?.errors?.['required']">El DNI es requerido.</div>
-    </div>
 
     <!-- Campos específicos para pacientes -->
     <div *ngIf="tipoUsuario === 'paciente'">
       <label for="obraSocial">Obra Social</label>
       <input type="text" formControlName="obraSocial" id="obraSocial">
+      <label for="img1">Imagen 1:</label>
+      <input type="file" (change)="agregarImagen($event)" required>
+      <label for="img2">Imagen 2:</label>
+      <input type="file" (change)="agregarImagen($event)" required>
     </div>
 
     <!-- Campos específicos para especialistas -->
     <div *ngIf="tipoUsuario === 'especialista'">
       <label for="especialidad">Especialidad</label>
       <input type="text" formControlName="especialidad" id="especialidad">
+      <label for="especialidadExtra">Nueva Especialidad (Opcional)</label>
+      <input type="text" formControlName="especialidadExtra" id="especialidadExtra" placeholder="Agregar especialidad">
+      <label for="img">Imagen de Perfil:</label>
+      <input type="file" (change)="agregarImagen($event)" required>
     </div>
 
+    <!-- Campos comunes -->
     <label for="email">Email</label>
     <input type="email" formControlName="email" id="email" required>
-    <div *ngIf="registroForm.get('email')?.invalid && registroForm.get('email')?.touched" class="error">
-      <div *ngIf="registroForm.get('email')?.errors?.['required']">El email es requerido.</div>
-      <div *ngIf="registroForm.get('email')?.errors?.['email']">Formato de email inválido.</div>
-    </div>
-
     <label for="password">Contraseña</label>
     <input type="password" formControlName="password" id="password" required>
-    <div *ngIf="registroForm.get('password')?.invalid && registroForm.get('password')?.touched" class="error">
-      <div *ngIf="registroForm.get('password')?.errors?.['required']">La contraseña es requerida.</div>
-      <div *ngIf="registroForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres.</div>
-    </div>
-
-    <label for="img1">Imagen 1:</label>
-    <input type="file" id="img1" (change)="agregarImagen($event)" required>
-    <label for="img2">Imagen 2:</label>
-    <input type="file" id="img2" (change)="agregarImagen($event)" required> 
-
-    <div *ngIf="imagenes.invalid && imagenes.touched" class="error">
-      <div *ngIf="imagenes.errors?.['required']">Se requiere al menos una imagen.</div>
-    </div>
 
     <button type="submit" [disabled]="registroForm.invalid">Registrarse</button>
   </form>
 
-  <p>¿Ya tenes una cuenta? <a [routerLink]="['/login']">Iniciar sesión aquí</a></p>
+  <p>¿Ya tienes una cuenta? <a [routerLink]="['/login']">Iniciar sesión aquí</a></p>
 </div>

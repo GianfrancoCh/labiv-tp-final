@@ -33,12 +33,12 @@ input[type="password"] {
 }
 
 button {
-    background-color: #4c5baf;
+    background-color: #ac57b1;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     width: 100%;
     font-family: inherit

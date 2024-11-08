@@ -40,6 +40,10 @@ export class RegistroComponent implements OnInit {
       imagenes: this.fb.array([], [Validators.required]) 
     });
   }
+  setTipoUsuario(tipo: 'paciente' | 'especialista') {
+    this.tipoUsuario = tipo;
+    this.registroForm.get('tipoUsuario')?.setValue(tipo);
+  }
 
   // Getter para las imágenes
   get imagenes() {
