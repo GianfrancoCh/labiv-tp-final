@@ -39,29 +39,31 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();  
       return;
     }
-
+  
     const email = this.loginForm.get('email')?.value;  
     const password = this.loginForm.get('password')?.value;
-
+  
     this.authService.login(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-
-        // if (!user.emailVerified) {
-        //   throw new Error('Correo no verificado. Por favor, verifica tu correo antes de iniciar sesión.');
-        // }
-
+  
+        if (!user.emailVerified) {
+          throw new Error('Correo no verificado. Por favor, verifica tu correo antes de iniciar sesión.');
+        }
+  
+        console.log('UID del usuario al hacer login:', user.uid); // Depuración: verifica el UID
+  
         const userDocRef = doc(this.firestore, `usuarios/${user.uid}`);
         return getDoc(userDocRef).then(userDoc => {
           if (!userDoc.exists()) {
             throw new Error('Usuario no encontrado en la base de datos.');
           }
-
+  
           const userData = userDoc.data();
           if (userData['tipoUsuario'] === 'especialista' && !userData['aprobado']) {
             throw new Error('Tu cuenta de especialista no ha sido aprobada por el administrador.');
           }
-
+  
           let col = collection(this.firestore, 'logins');
           return addDoc(col, { fecha: new Date(), "email": email });
         });
@@ -83,7 +85,7 @@ export class LoginComponent {
       .catch((e) => {
         console.error('Error en el login:', e); 
         let errorMsg = e.message || 'Error desconocido al iniciar sesión';
-
+  
         switch (e.code) {
           case 'auth/wrong-password':
             errorMsg = 'Contraseña incorrecta';
@@ -98,7 +100,7 @@ export class LoginComponent {
             errorMsg = 'Email inválido';
             break;
         }
-
+  
         Swal.fire({
           icon: 'error',
           title: 'Error de Login',

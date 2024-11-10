@@ -4,7 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../servicios/auth.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, setDoc, doc } from '@angular/fire/firestore'; 
+import { Auth, sendEmailVerification } from '@angular/fire/auth'; 
 
 @Component({
   selector: 'app-register',
@@ -23,104 +24,114 @@ export class RegistroComponent implements OnInit {
     private fb: FormBuilder, 
     private authService: AuthService, 
     private router: Router, 
-    private firestore: Firestore 
+    private firestore: Firestore,
+    private auth: Auth // Inyectar Auth de Firebase
   ) {}
 
   ngOnInit(): void {
     this.registroForm = this.fb.group({
-      tipoUsuario: ['paciente'], 
-      nombre: ['', [Validators.required]],
-      apellido: ['', [Validators.required]],
-      edad: ['', [Validators.required, Validators.min(0)]],
+      tipoUsuario: ['paciente', Validators.required],
+      nombre: ['', Validators.required],
+      apellido: ['', Validators.required],
+      edad: ['', [Validators.required, Validators.min(1)]],
       dni: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       obraSocial: [''], 
       especialidad: [''], 
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      imagenes: this.fb.array([], [Validators.required]) 
+      imagenes: this.fb.array([], [Validators.minLength(1)]) 
     });
   }
+  
   setTipoUsuario(tipo: 'paciente' | 'especialista') {
     this.tipoUsuario = tipo;
     this.registroForm.get('tipoUsuario')?.setValue(tipo);
+  
+    if (tipo === 'paciente') {
+      this.registroForm.get('obraSocial')?.setValidators(Validators.required);
+      this.registroForm.get('especialidad')?.clearValidators();
+    } else if (tipo === 'especialista') {
+      this.registroForm.get('especialidad')?.setValidators(Validators.required);
+      this.registroForm.get('obraSocial')?.clearValidators();
+    }
+  
+    this.registroForm.get('obraSocial')?.updateValueAndValidity();
+    this.registroForm.get('especialidad')?.updateValueAndValidity();
   }
-
-  // Getter para las imágenes
+  
   get imagenes() {
     return this.registroForm.get('imagenes') as FormArray;
   }
-
+  
   agregarImagen($event: any) {
     const auxFile: File = $event.target.files[0];
-
     if (!auxFile || !auxFile.type.startsWith('image')) {
       Swal.fire('Oops...', 'Debes elegir un archivo de tipo imagen.', 'error');
       return;
     }
-  
-    if ($event.target.id === 'img1') {
-      this.imgFile1Label = auxFile.name;
-      this.imagenes.push(this.fb.control(auxFile));
-    } else if ($event.target.id === 'img2') {
-      this.imgFile2Label = auxFile.name;
-      this.imagenes.push(this.fb.control(auxFile));
-    }
+    this.imagenes.push(this.fb.control(auxFile));
   }
 
   onSubmit() {
+    console.log('Formulario válido:', this.registroForm.valid);
+    console.log('Errores en el formulario:', this.registroForm.errors);
+  
     if (this.registroForm.invalid) {
       this.registroForm.markAllAsTouched();
       return;
     }
-
+  
     const formData = this.registroForm.value;
-
+  
     this.authService.registro(formData.email, formData.password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      if (!user) {
-        console.error('El objeto user no está definido.');
-        return;
-      }
-
-      const userCollection = collection(this.firestore, 'usuarios');
-      const userData = {
-        uid: user.uid,
-        tipoUsuario: formData.tipoUsuario,
-        nombre: formData.nombre,
-        apellido: formData.apellido,
-        edad: formData.edad,
-        dni: formData.dni,
-        obraSocial: formData.tipoUsuario === 'paciente' ? formData.obraSocial : null,
-        especialidad: formData.tipoUsuario === 'especialista' ? formData.especialidad : null,
-        email: formData.email,
-        aprobado: formData.tipoUsuario === 'especialista' ? false : true,
-        fechaRegistro: new Date(),
-      };
-      return addDoc(userCollection, userData)
-        .catch((error) => {
-          console.error('Error al guardar en Firestore:', error);
-          throw error; 
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if (!user) {
+          throw new Error('El objeto user no está definido.');
+        }
+  
+        console.log('UID del usuario:', user.uid); // Depuración: verifica el UID
+  
+        // Enviar el correo de verificación
+        return sendEmailVerification(user).then(() => {
+          // Guardar datos del usuario en Firestore
+          const userCollection = collection(this.firestore, 'usuarios');
+          const userData = {
+            uid: user.uid,
+            tipoUsuario: formData.tipoUsuario,
+            nombre: formData.nombre,
+            apellido: formData.apellido,
+            edad: formData.edad,
+            dni: formData.dni,
+            obraSocial: formData.tipoUsuario === 'paciente' ? formData.obraSocial : null,
+            especialidad: formData.tipoUsuario === 'especialista' ? formData.especialidad : null,
+            email: formData.email,
+            aprobado: formData.tipoUsuario === 'especialista' ? false : true,
+            fechaRegistro: new Date(),
+          };
+          console.log('Datos del usuario que se guardarán:', userData); // Depuración: verifica los datos
+  
+          return setDoc(doc(this.firestore, `usuarios/${user.uid}`), userData); // Asegúrate de usar el UID
         });
-    })
-    .then(() => {
-      Swal.fire({
-        title: 'Registro exitoso',
-        text: 'El usuario ha sido registrado con éxito.',
-        icon: 'success'
-      }).then(() => {
-        this.router.navigate(['/home']);
+      })
+      .then(() => {
+        Swal.fire({
+          title: 'Registro exitoso',
+          text: 'Por favor, verifica tu correo electrónico para completar el registro.',
+          icon: 'success'
+        }).then(() => {
+          this.router.navigate(['/home']);
+        });
+      })
+      .catch((e) => {
+        console.error('Error general:', e);
+        const errorMsg = this.obtenerMensajeDeError(e.code);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de Registro',
+          text: errorMsg
+        });
       });
-  })
-  .catch((e) => {
-    console.error('Error general:', e);
-    const errorMsg = this.obtenerMensajeDeError(e.code);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error de Registro',
-      text: errorMsg
-    });
-  });
   }
 
   obtenerMensajeDeError(codigo: string): string {
