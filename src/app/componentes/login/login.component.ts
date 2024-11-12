@@ -20,17 +20,32 @@ export class LoginComponent {
   flagError: boolean = false;
   msjError: string = '';
 
+  usuariosAccesoRapido = [
+    { nombre: 'Paciente 1', email: 'hesoy40164@lineacr.com', password: '1234hola' },
+    { nombre: 'Paciente 2', email: 'bimame9338@lineacr.com', password: '1234hola' },
+    { nombre: 'Paciente 3', email: 'cexibo3789@cironex.com', password: '1234hola' },
+    { nombre: 'Especialista 1', email: 'gagesow230@anypng.com', password: '1234hola' },
+    { nombre: 'Especialista 2', email: 'worenik310@lineacr.com', password: '1234hola' },
+    { nombre: 'Administrador', email: 'admin@test.com', password: '1234hola' }
+  ];
+
   constructor(private router: Router, private fb: FormBuilder, private firestore: Firestore, private authService: AuthService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
+  autocompletarConUsuario(usuario: { email: string; password: string }) {
+    this.loginForm.patchValue({
+      email: usuario.email,
+      password: usuario.password
+    });
+  }
 
   autocompletarLogin() {
     this.loginForm.patchValue({
       email: "admin@test.com",
-      password: "admin1234"
+      password: "1234hola"
     });
   }
 
@@ -46,11 +61,7 @@ export class LoginComponent {
     this.authService.login(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-  
-        if (!user.emailVerified) {
-          throw new Error('Correo no verificado. Por favor, verifica tu correo antes de iniciar sesión.');
-        }
-  
+        
         console.log('UID del usuario al hacer login:', user.uid); // Depuración: verifica el UID
   
         const userDocRef = doc(this.firestore, `usuarios/${user.uid}`);
@@ -60,6 +71,13 @@ export class LoginComponent {
           }
   
           const userData = userDoc.data();
+  
+          // Excepción para administradores: omitir la verificación de correo
+          if (userData['tipoUsuario'] !== 'administrador' && !user.emailVerified) {
+            throw new Error('Correo no verificado. Por favor, verifica tu correo antes de iniciar sesión.');
+          }
+  
+          // Verificar si el especialista está aprobado
           if (userData['tipoUsuario'] === 'especialista' && !userData['aprobado']) {
             throw new Error('Tu cuenta de especialista no ha sido aprobada por el administrador.');
           }

@@ -8,7 +8,7 @@
 
 
 .login-container {
-    width: 300px;
+    width: 500px;
     font-family: system-ui;
     padding: 20px;
     border: 2px solid #000000;
@@ -52,4 +52,41 @@ button:disabled {
 .error {
     color: red;
     font-size: 12px;
+}
+
+.botones-acceso-rapido {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+.boton-usuario {
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%; /* Botones redondos */
+    width: 60px; /* Ancho del botón */
+    height: 60px; /* Alto del botón, igual que el ancho para que sean redondos */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    outline: none; /* Remueve el borde del botón al hacer clic */
+}
+
+.boton-usuario:hover {
+    background-color: #0056b3;
+}
+
+.boton-usuario span {
+    display: none; /* Oculta el texto si solo quieres mostrar botones redondos */
+}
+
+.imagen-usuario {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Hace que las imágenes sean redondas */
+    object-fit: cover; /* Asegura que la imagen se ajuste bien dentro del botón */
 }

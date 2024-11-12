@@ -1,0 +1,170 @@
+:host {
+  display: block;
+  padding: 20px;
+  background: linear-gradient(135deg, #7e98f4, #ebb3b3); 
+  font-family: Arial, sans-serif;
+}
+
+/* Título */
+h2, h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+/* Botones de selección de tipo de usuario */
+.tipo-usuario-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tipo-usuario-buttons button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.tipo-usuario-buttons button:hover {
+  background-color: #d0d0d0;
+  transform: translateY(-2px);
+}
+
+.tipo-usuario-buttons button.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Campos de formulario */
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #0a0a0a;
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+input[type="file"] {
+  border: none;
+  margin-bottom: 15px;
+}
+
+.error small {
+  color: #d9534f;
+  font-size: 0.85rem;
+}
+
+/* Botón de envío */
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para la lista de usuarios */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-table th, .user-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.user-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.user-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.user-table td button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.user-table td button:first-child {
+  background-color: #28a745;
+  color: white;
+  margin-right: 5px;
+}
+
+.user-table td button:first-child:hover {
+  background-color: #218838;
+}
+
+.user-table td button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+.user-table td button:last-child:hover {
+  background-color: #c82333;
+}
+
+/* Formulario de creación de usuarios */
+.create-admin-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.register-container {
+  max-width: 600px; 
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #0a0a0a;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}

@@ -1,10 +1,13 @@
 <nav class="navbar">
     <ul>
       <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
-      <li><a routerLink="/ingresar" routerLinkActive="active">Ingresar</a></li>
-      <li><a routerLink="/registro" routerLinkActive="active">Registrarse</a></li>
-
+      <li *ngIf="!isLoggedIn"><a routerLink="/ingresar" routerLinkActive="active">Ingresar</a></li>
+      <li *ngIf="!isLoggedIn"><a routerLink="/registro" routerLinkActive="active">Registrarse</a></li>
       
+      
+      <!-- Mostrar el botón de Logout si está logueado -->
+      <li *ngIf="isLoggedIn"><a routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
+      <li *ngIf="isLoggedIn" class="logout"><a (click)="logout()">Cerrar Sesión</a></li>
     </ul>
   </nav>
   
