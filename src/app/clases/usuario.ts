@@ -1,6 +1,7 @@
 export class Usuario {
 	tipoUsuario: string;
 	id: string;
+	uid: string;
 	nombre: string;
 	apellido: string;
 	edad: number;
@@ -10,11 +11,12 @@ export class Usuario {
 	email: string;
 	contrasena: string;
 	aprobado: boolean;
-	public especialidad?: string 
+	especialidades?: string[];
 
-	constructor(tipoUsuario: string, id: string = '', nombre: string, apellido: string, edad: number, dni: number, imgUrl1: string, imgUrl2: string, email: string, contrasena: string, aprobado: boolean = false) {
+	constructor(tipoUsuario: string,  uid: string, id: string = '', nombre: string, apellido: string, edad: number, dni: number, imgUrl1: string, imgUrl2: string, email: string, contrasena: string, aprobado: boolean = false, especialidades?: string[]) {
 		this.tipoUsuario = tipoUsuario;
 		this.id = id;
+		this.uid = uid;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.edad = edad;
@@ -24,6 +26,7 @@ export class Usuario {
 		this.email = email;
 		this.contrasena = contrasena;
 		this.aprobado = aprobado;
+		this.especialidades = especialidades;
 		
 	}
 }

@@ -1,0 +1,84 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #7e98f4, #ebb3b3);
+  padding: 20px; /* Añade un poco de espacio alrededor para evitar que se salga de la pantalla */
+}
+
+.perfil-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px; /* Espacio entre los elementos */
+  max-width: 1000px; /* Limitar el ancho total */
+  width: 100%; /* Usar todo el espacio disponible */
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  overflow: hidden; /* Evita que el contenido se desborde */
+}
+
+.info-basica {
+  flex: 1;
+  padding: 20px;
+}
+
+.perfil-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.perfil-container p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.perfil-container strong {
+  color: #333;
+}
+
+.imagenes-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.imagenes-container img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  transition: transform 0.3s;
+}
+
+.imagenes-container img:hover {
+  transform: scale(1.05);
+}
+
+/* Estilo para el componente MisHorarios */
+.mis-horarios-container {
+  flex: 2;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .perfil-container {
+    flex-direction: column; /* Cambia a una columna en pantallas más pequeñas */
+    max-width: 100%;
+  }
+
+  .imagenes-container img {
+    width: 120px;
+    height: 120px;
+  }
+}

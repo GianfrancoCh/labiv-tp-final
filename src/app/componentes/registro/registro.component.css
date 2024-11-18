@@ -10,9 +10,9 @@
 }
 
 .register-container {
-    height: 550px;
+    height: 500px;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     font-family: system-ui;
     padding: 20px;
     border: 2px solid #000000;
@@ -123,5 +123,12 @@ button:disabled {
     height: 100%;
     border-radius: 50%; /* Hace que las imágenes también sean redondas */
     object-fit: cover; /* Asegura que la imagen se ajuste correctamente sin deformarse */
+}
+
+.captcha{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 

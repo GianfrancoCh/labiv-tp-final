@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { Firestore, collection, setDoc, doc,getDocs, addDoc} from '@angular/fire/firestore';
 import { Auth, sendEmailVerification } from '@angular/fire/auth';
 import { RecaptchaModule } from 'ng-recaptcha'; 
+import { getStorage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+
 
 interface Especialidad {
   id: string;
@@ -29,6 +31,7 @@ export class RegistroComponent implements OnInit {
   recaptchaResponse: string | null = null; // Variable para almacenar la respuesta del CAPTCHA
   especialidades: Especialidad[] = [];
   nuevaEspecialidad: string = '';
+  imgFiles: File[] = [];
 
   constructor(
     private fb: FormBuilder, 
@@ -49,7 +52,7 @@ export class RegistroComponent implements OnInit {
       edad: ['', [Validators.required, Validators.min(18), Validators.max(120)]], 
       dni: ['', [Validators.required, Validators.pattern(/^\d{7,8}$/)]], 
       obraSocial: [''],
-      especialidad: [''],
+      especialidades: this.fb.array([], Validators.required),
       nuevaEspecialidad: [''],
       email: ['', [Validators.required, Validators.email]],
       password: [
@@ -72,6 +75,22 @@ export class RegistroComponent implements OnInit {
       }
       this.registroForm.get('especialidadNueva')?.updateValueAndValidity();
     });
+  }
+
+  get especialidadesArray(): FormArray {
+    return this.registroForm.get('especialidades') as FormArray;
+  }
+
+  agregarEspecialidadExistente(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const especialidadId = selectElement.value;
+    
+    if (especialidadId) {
+      const especialidad = this.especialidades.find(esp => esp.id === especialidadId);
+      if (especialidad && !this.especialidadesArray.value.includes(especialidad.name)) {
+        this.especialidadesArray.push(this.fb.control(especialidad.name));
+      }
+    }
   }
 
 
@@ -131,12 +150,40 @@ export class RegistroComponent implements OnInit {
   }
 
   agregarImagen($event: any) {
-    const auxFile: File = $event.target.files[0];
-    if (!auxFile || !auxFile.type.startsWith('image')) {
+    const file = $event.target.files[0];
+    if (!file || !file.type.startsWith('image')) {
       Swal.fire('Oops...', 'Debes elegir un archivo de tipo imagen.', 'error');
       return;
     }
-    this.imagenes.push(this.fb.control(auxFile));
+    this.imgFiles.push(file); // Almacena la imagen seleccionada
+  }
+
+  async subirImagenes(uid: string, tipoUsuario: string): Promise<{ imgUrl1: string, imgUrl2?: string }> {
+    const storage = getStorage();
+    let imgUrl1 = '';
+    let imgUrl2 = '';
+  
+    // Sube la primera imagen
+    if (this.imgFiles[0]) {
+      const file1 = this.imgFiles[0];
+      const fileName1 = `usuarios/${uid}/1-${file1.name}`;
+      const storageRef1 = ref(storage, fileName1);
+  
+      await uploadBytes(storageRef1, file1);
+      imgUrl1 = await getDownloadURL(storageRef1);
+    }
+  
+    // Sube la segunda imagen solo si el usuario es un paciente
+    if (tipoUsuario === 'paciente' && this.imgFiles[1]) {
+      const file2 = this.imgFiles[1];
+      const fileName2 = `usuarios/${uid}/2-${file2.name}`;
+      const storageRef2 = ref(storage, fileName2);
+  
+      await uploadBytes(storageRef2, file2);
+      imgUrl2 = await getDownloadURL(storageRef2);
+    }
+  
+    return { imgUrl1, imgUrl2 };
   }
 
   onCaptchaResolved(response: string | null) {
@@ -144,55 +191,61 @@ export class RegistroComponent implements OnInit {
   }
   
 
-  onSubmit() {
+  async onSubmit() {
     if (this.registroForm.invalid || !this.recaptchaResponse) {
       this.registroForm.markAllAsTouched();
       return;
     }
-
-    const formData = this.registroForm.value;
-    this.authService.registro(formData.email, formData.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        if (!user) {
-          throw new Error('El objeto user no está definido.');
-        }
-
-        return sendEmailVerification(user).then(() => {
-          const userCollection = collection(this.firestore, 'usuarios');
-          const userData = {
-            uid: user.uid,
-            tipoUsuario: formData.tipoUsuario,
-            nombre: formData.nombre,
-            apellido: formData.apellido,
-            edad: formData.edad,
-            dni: formData.dni,
-            obraSocial: formData.tipoUsuario === 'paciente' ? formData.obraSocial : null,
-            especialidad: formData.tipoUsuario === 'especialista' ? formData.especialidad : null,
-            email: formData.email,
-            aprobado: formData.tipoUsuario === 'especialista' ? false : true,
-            fechaRegistro: new Date(),
-          };
-          return setDoc(doc(this.firestore, `usuarios/${user.uid}`), userData);
-        });
-      })
-      .then(() => {
-        Swal.fire({
-          title: 'Registro exitoso',
-          text: 'Por favor, verifica tu correo electrónico para completar el registro.',
-          icon: 'success'
-        }).then(() => {
-          this.router.navigate(['/home']);
-        });
-      })
-      .catch((e) => {
-        const errorMsg = this.obtenerMensajeDeError(e.code);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error de Registro',
-          text: errorMsg
-        });
+  
+    try {
+      const formData = this.registroForm.value;
+      const userCredential = await this.authService.registro(formData.email, formData.password);
+      const user = userCredential.user;
+      if (!user) throw new Error('El objeto user no está definido.');
+  
+      // Sube las imágenes a Firebase Storage y obtiene las URLs
+      const { imgUrl1, imgUrl2 } = await this.subirImagenes(user.uid, formData.tipoUsuario);
+  
+      await sendEmailVerification(user);
+  
+      const userCollection = collection(this.firestore, 'usuarios');
+      const userData: any = {
+        uid: user.uid,
+        tipoUsuario: formData.tipoUsuario,
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        edad: formData.edad,
+        dni: formData.dni,
+        obraSocial: formData.tipoUsuario === 'paciente' ? formData.obraSocial : null,
+        especialidades: formData.tipoUsuario === 'especialista' ? formData.especialidades || [] : null, // Corrige aquí
+        email: formData.email,
+        imgUrl1, // Guarda imgUrl1
+        aprobado: formData.tipoUsuario === 'especialista' ? false : true,
+        fechaRegistro: new Date()
+      };
+  
+      // Agrega imgUrl2 solo si es un paciente
+      if (formData.tipoUsuario === 'paciente') {
+        userData.imgUrl2 = imgUrl2;
+      }
+  
+      await setDoc(doc(this.firestore, `usuarios/${user.uid}`), userData);
+  
+      Swal.fire({
+        title: 'Registro exitoso',
+        text: 'Por favor, verifica tu correo electrónico para completar el registro.',
+        icon: 'success'
+      }).then(() => {
+        this.router.navigate(['/home']);
       });
+    } catch (error) {
+      console.error('Error durante el registro:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de Registro',
+        text: 'Hubo un problema al realizar el registro. Inténtalo de nuevo.'
+      });
+    }
   }
 
   obtenerMensajeDeError(codigo: string): string {

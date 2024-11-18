@@ -1,6 +1,6 @@
 <div class="register-container">
   <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
-    <h2>Registro</h2>
+    <h2>Registrarse</h2>
 
     <label for="tipoUsuario">Tipo de usuario</label>
     <div class="tipo-usuario-buttons">
@@ -58,18 +58,30 @@
     </div>
 
     <!-- Campos específicos para especialistas -->
-    <div class="col-md-6 mb-3" *ngIf="registroForm.get('tipoUsuario')?.value === 'especialista'">
-      <label for="especialidad">Especialidad</label>
-      <select formControlName="especialidad" class="form-control">
+    <div *ngIf="registroForm.get('tipoUsuario')?.value === 'especialista'">
+      <h3>Especialidades</h3>
+      <!-- Selección de especialidades existentes -->
+      <label for="especialidad">Seleccionar Especialidad</label>
+      <select (change)="agregarEspecialidadExistente($event)">
+        <option value="" disabled selected>Selecciona una especialidad</option>
         <option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp.name }}</option>
       </select>
     
-      <label for="nuevaEspecialidad">Agregar Nueva Especialidad</label>
-      <div class="input-group">
-        <input type="text" id="nuevaEspecialidad" formControlName="nuevaEspecialidad" class="form-control" placeholder="Nueva especialidad"/>
-        <button type="button" class="btn btn-primary" (click)="agregarEspecialidad()">Agregar</button>
+      <!-- Lista de especialidades añadidas -->
+      <div formArrayName="especialidades">
+        <div *ngFor="let control of especialidadesArray.controls; let i = index">
+          <p>{{ control.value }} <button type="button" (click)="especialidadesArray.removeAt(i)">Eliminar</button></p>
+        </div>
       </div>
+    
+      <!-- Agregar nueva especialidad -->
+      <label for="nuevaEspecialidad">Agregar Nueva Especialidad</label>
+      <input type="text" formControlName="nuevaEspecialidad" placeholder="Nueva especialidad" />
+      <button type="button" (click)="agregarEspecialidad()">Agregar</button>
     </div>
+
+    <label for="img1">Imagen 1:</label>
+    <input type="file" (change)="agregarImagen($event)" required>
 
     <!-- Campos comunes -->
     <label for="email">Email</label>
@@ -87,7 +99,7 @@
     </div>
 
     <!-- reCAPTCHA -->
-    <re-captcha siteKey=6LfYr3wqAAAAAI6opWRi2sTNVD1xthY74Q_gX0n- (resolved)="onCaptchaResolved($event)"></re-captcha>
+    <re-captcha class="captcha" siteKey=6LfYr3wqAAAAAI6opWRi2sTNVD1xthY74Q_gX0n- (resolved)="onCaptchaResolved($event)"></re-captcha>
 
     <button type="submit" [disabled]="registroForm.invalid || !recaptchaResponse">Registrarse</button>
   </form>

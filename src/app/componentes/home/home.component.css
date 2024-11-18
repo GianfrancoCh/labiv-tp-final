@@ -16,7 +16,7 @@
     align-items: center;
     padding: 40px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.8); /* Fondo translúcido */
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }

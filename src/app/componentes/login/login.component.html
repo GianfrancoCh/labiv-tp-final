@@ -22,7 +22,8 @@
   <!-- Botones de acceso rápido -->
   <div class="botones-acceso-rapido">
     <button *ngFor="let usuario of usuariosAccesoRapido" (click)="autocompletarConUsuario(usuario)" class="boton-usuario">
-      {{ usuario.nombre }}
+      <img *ngIf="usuario.imgUrl" [src]="usuario.imgUrl" alt="{{ usuario.nombre }}" class="usuario-imagen">
+      <!-- {{ usuario.nombre }} -->
     </button>
   </div>
 

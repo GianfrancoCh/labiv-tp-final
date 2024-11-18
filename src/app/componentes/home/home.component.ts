@@ -25,4 +25,3 @@ export class HomeComponent {
     }
 
 }
-/*https://www.shutterstock.com/image-illustration/empty-corridor-modern-hospital-information-260nw-2105035352.jpg*/

@@ -8,7 +8,7 @@
 
 
 .login-container {
-    width: 500px;
+    width: 700px;
     font-family: system-ui;
     padding: 20px;
     border: 2px solid #000000;
@@ -53,40 +53,31 @@ button:disabled {
     color: red;
     font-size: 12px;
 }
-
-.botones-acceso-rapido {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
-  
 .boton-usuario {
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 50%; /* Botones redondos */
-    width: 60px; /* Ancho del botón */
-    height: 60px; /* Alto del botón, igual que el ancho para que sean redondos */
-    display: flex;
-    justify-content: center;
+    display: inline-flex;
     align-items: center;
-    font-size: 0.8rem;
+    justify-content: center;
+    width: 95px; /* Aumenta el tamaño del botón */
+    height: 95px; /* Aumenta el tamaño del botón */
+    border-radius: 50%; /* Hacer el botón redondo */
+    margin: 10px;
+    border: none;
+    background-color: #f8f9fa; /* Color de fondo claro */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
     cursor: pointer;
-    transition: background-color 0.3s;
-    outline: none; /* Remueve el borde del botón al hacer clic */
+    overflow: hidden; /* Para que la imagen no se salga del botón */
+    transition: transform 0.2s, box-shadow 0.2s; /* Animación suave */
 }
 
 .boton-usuario:hover {
-    background-color: #0056b3;
+    transform: scale(1.05); /* Agranda el botón al pasar el cursor */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Aumenta la sombra */
 }
 
-.boton-usuario span {
-    display: none; /* Oculta el texto si solo quieres mostrar botones redondos */
+.usuario-imagen {
+    width: 100%; /* La imagen ocupa todo el botón */
+    height: 100%; /* La imagen ocupa todo el botón */
+    object-fit: cover; /* Mantiene la proporción de la imagen */
+    border-radius: 50%; /* Hacer la imagen redonda */
 }
-
-.imagen-usuario {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%; /* Hace que las imágenes sean redondas */
-    object-fit: cover; /* Asegura que la imagen se ajuste bien dentro del botón */
-}
+  

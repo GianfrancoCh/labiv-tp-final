@@ -7,7 +7,11 @@
       
       <!-- Mostrar el botón de Logout si está logueado -->
       <li *ngIf="isLoggedIn"><a routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
+      <li *ngIf="isLoggedIn"><a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a></li>
+      <li *ngIf="isLoggedIn"><a routerLink="/mis-turnos" routerLinkActive="active">Mis Turnos</a></li>
+      <li *ngIf="isLoggedIn"><a routerLink="/solicitar-turno" routerLinkActive="active">Solicitar Turno</a></li>
       <li *ngIf="isLoggedIn" class="logout"><a (click)="logout()">Cerrar Sesión</a></li>
+
     </ul>
   </nav>
   

@@ -1,0 +1,21 @@
+<div class="filtros">
+    <label>Filtrar por Especialidad:</label>
+    <input type="text" [(ngModel)]="filtroEspecialidad" (input)="filtrarTurnos()">
+    <label>Filtrar por Especialista:</label>
+    <input type="text" [(ngModel)]="filtroEspecialista" (input)="filtrarTurnos()">
+  </div>
+  
+  <div class="lista-turnos">
+    <div *ngFor="let turno of turnos" class="turno">
+      <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+      <p><strong>Especialista:</strong> {{ turno.especialista }}</p>
+      <p><strong>Fecha:</strong> {{ turno.fecha | date }}</p>
+      <p><strong>Estado:</strong> {{ turno.estado }}</p>
+  
+      <!-- Mostrar acciones según el estado del turno -->
+      <button *ngIf="turno.estado !== 'realizado'" (click)="cancelarTurno(turno)">Cancelar Turno</button>
+      <button *ngIf="turno.tieneResena" (click)="verResena(turno)">Ver Resena</button>
+      <button *ngIf="turno.estado === 'realizado' && turno.tieneResena" (click)="completarEncuesta(turno)">Completar Encuesta</button>
+      <button *ngIf="turno.estado === 'realizado'" (click)="calificarAtencion(turno)">Calificar Atencion</button>
+    </div>
+  </div>
