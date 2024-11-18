@@ -85,12 +85,9 @@ export class SolicitarTurnoComponent implements OnInit {
     // Generar los próximos 15 días
     for (let i = 0; i < 15; i++) {
       const dia = hoy.clone().add(i, 'days');
-      const diaSemana = dia.format('dddd'); // Obtener el nombre del día en español
+      const diaSemana = dia.format('dddd').toLowerCase(); // Obtener el nombre del día en español y en minúsculas
 
-      // Ajusta la comparación a minúsculas para evitar problemas de mayúsculas/minúsculas
-      const disponible = disponibilidad.some((d: any) => {
-        return d.dia.toLowerCase() === diaSemana.toLowerCase();
-      });
+      const disponible = disponibilidad.some((d: any) => d.dia.toLowerCase() === diaSemana);
 
       if (disponible) {
         diasDisponibles.push(dia.format('YYYY-MM-DD'));
@@ -106,7 +103,23 @@ export class SolicitarTurnoComponent implements OnInit {
       .find((e: any) => e.nombre === this.especialidadSeleccionada)
       ?.disponibilidad.filter((d: any) => d.dia.toLowerCase() === moment(dia).format('dddd').toLowerCase());
 
-    this.horariosDisponibles = (disponibilidad || []).map((d: any) => `${d.desde} - ${d.hasta}`);
+    this.horariosDisponibles = [];
+
+    if (disponibilidad && disponibilidad.length > 0) {
+      disponibilidad.forEach((d: any) => {
+        let desde = moment(d.desde, 'HH:mm');
+        const hasta = moment(d.hasta, 'HH:mm');
+
+        while (desde.isBefore(hasta)) {
+          const siguiente = desde.clone().add(30, 'minutes');
+          if (siguiente.isAfter(hasta)) break;
+
+          this.horariosDisponibles.push(`${desde.format('HH:mm')} - ${siguiente.format('HH:mm')}`);
+          desde.add(30, 'minutes');
+        }
+      });
+    }
+
     console.log('Día seleccionado:', dia);
     console.log('Horarios disponibles:', this.horariosDisponibles);
   }
