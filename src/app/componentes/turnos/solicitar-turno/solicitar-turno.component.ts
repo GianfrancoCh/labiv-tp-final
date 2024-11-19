@@ -1,8 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Firestore, collection, getDocs, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { AuthService } from '../../../servicios/auth.service';
 import moment from 'moment';
 import 'moment/locale/es';
+import { Usuario } from '../../../clases/usuario';
+import { Turno } from '../../../clases/turno';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
 moment.locale('es'); // Configura Moment.js para usar el español
 
@@ -11,24 +16,37 @@ moment.locale('es'); // Configura Moment.js para usar el español
   templateUrl: './solicitar-turno.component.html',
   styleUrls: ['./solicitar-turno.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class SolicitarTurnoComponent implements OnInit {
   especialistas: any[] = [];
   especialidades: any[] = [];
+  pacientes: any[] = []; // Lista de pacientes
   diasDisponibles: string[] = [];
   horariosDisponibles: string[] = [];
   cargando: boolean = true;
 
+  usuario: Usuario | null = null; // Información del usuario logueado
+  tipoUsuario: string = ''; // 'paciente' o 'administrador'
+  pacienteSeleccionado: Usuario | null = null; // Paciente seleccionado por el administrador
+
   especialistaSeleccionado: any = null;
   especialidadSeleccionada: string = '';
   diaSeleccionado: string = '';
+  horarioSeleccionado: string = '';
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private authService: AuthService, private router: Router) {}
 
   async ngOnInit() {
     try {
+      this.usuario = await this.authService.getUserProfile();
+      this.tipoUsuario = this.usuario?.tipoUsuario || '';
       await this.cargarEspecialistas();
+      
+      // Si el usuario es un administrador, carga la lista de pacientes
+      if (this.tipoUsuario === 'administrador') {
+        await this.cargarPacientes();
+      }
     } catch (error) {
       console.error('Error al cargar especialistas:', error);
     } finally {
@@ -62,38 +80,47 @@ export class SolicitarTurnoComponent implements OnInit {
     }
 
     this.especialistas = especialistas;
-    console.log('Especialistas cargados:', this.especialistas);
+  }
+
+  async cargarPacientes() {
+    const usuariosRef = collection(this.firestore, 'usuarios');
+    const snapshot = await getDocs(usuariosRef);
+    const pacientes = snapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        return {
+          uid: doc.id,
+          nombre: data['nombre'],
+          apellido: data['apellido'],
+          tipoUsuario: data['tipoUsuario']
+        };
+      })
+      .filter(usuario => usuario.tipoUsuario === 'paciente');
+
+    this.pacientes = pacientes;
   }
 
   seleccionarEspecialista(especialista: any) {
     this.especialistaSeleccionado = especialista;
     this.especialidades = especialista.especialidades;
-    console.log('Especialista seleccionado:', especialista);
   }
 
   seleccionarEspecialidad(especialidad: any) {
     this.especialidadSeleccionada = especialidad.nombre;
     this.diasDisponibles = this.generarDiasDisponibles(especialidad.disponibilidad || []);
-    console.log('Especialidad seleccionada:', especialidad);
-    console.log('Días disponibles:', this.diasDisponibles);
   }
 
   generarDiasDisponibles(disponibilidad: any[]): string[] {
     const diasDisponibles: string[] = [];
     const hoy = moment();
-
-    // Generar los próximos 15 días
     for (let i = 0; i < 15; i++) {
       const dia = hoy.clone().add(i, 'days');
-      const diaSemana = dia.format('dddd').toLowerCase(); // Obtener el nombre del día en español y en minúsculas
-
+      const diaSemana = dia.format('dddd').toLowerCase();
       const disponible = disponibilidad.some((d: any) => d.dia.toLowerCase() === diaSemana);
-
       if (disponible) {
         diasDisponibles.push(dia.format('YYYY-MM-DD'));
       }
     }
-
     return diasDisponibles;
   }
 
@@ -104,23 +131,48 @@ export class SolicitarTurnoComponent implements OnInit {
       ?.disponibilidad.filter((d: any) => d.dia.toLowerCase() === moment(dia).format('dddd').toLowerCase());
 
     this.horariosDisponibles = [];
-
     if (disponibilidad && disponibilidad.length > 0) {
       disponibilidad.forEach((d: any) => {
         let desde = moment(d.desde, 'HH:mm');
         const hasta = moment(d.hasta, 'HH:mm');
-
         while (desde.isBefore(hasta)) {
           const siguiente = desde.clone().add(30, 'minutes');
           if (siguiente.isAfter(hasta)) break;
-
           this.horariosDisponibles.push(`${desde.format('HH:mm')} - ${siguiente.format('HH:mm')}`);
           desde.add(30, 'minutes');
         }
       });
     }
+  }
 
-    console.log('Día seleccionado:', dia);
-    console.log('Horarios disponibles:', this.horariosDisponibles);
+  seleccionarHorario(horario: string) {
+    this.horarioSeleccionado = horario;
+  }
+
+  async confirmarTurno() {
+    const pacienteUID = this.tipoUsuario === 'administrador' ? this.pacienteSeleccionado?.uid : this.usuario?.uid;
+    if (!this.especialistaSeleccionado || !this.especialidadSeleccionada || !this.diaSeleccionado || !this.horarioSeleccionado || !pacienteUID) {
+      console.error('Faltan datos para confirmar el turno');
+      return;
+    }
+
+    try {
+      const turnosRef = collection(this.firestore, 'turnos');
+      const turnoData: Turno = {
+        id: '',
+        fecha: new Date(`${this.diaSeleccionado} ${this.horarioSeleccionado.split(' - ')[0]}`),
+        estado: 'pendiente',
+        especialidad: this.especialidadSeleccionada,
+        paciente: pacienteUID,
+        especialista: this.especialistaSeleccionado.uid
+      };
+
+      const nuevoTurnoDoc = await addDoc(turnosRef, turnoData);
+      await updateDoc(nuevoTurnoDoc, { id: nuevoTurnoDoc.id });
+      this.router.navigate(['/mis-turnos-paciente']);  
+      
+    } catch (error) {
+      console.error('Error al confirmar el turno:', error);
+    }
   }
 }

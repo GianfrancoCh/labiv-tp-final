@@ -1,6 +1,15 @@
 <h3>Sacar Turno</h3>
 
+<div *ngIf="tipoUsuario === 'administrador'" class="pacientes">
+  <label for="paciente">Seleccionar Paciente:</label>
+  <select id="paciente" [(ngModel)]="pacienteSeleccionado">
+    <option *ngFor="let paciente of pacientes" [ngValue]="paciente">
+      {{ paciente.nombre }} {{ paciente.apellido }}
+    </option>
+  </select>
+</div>
 <!-- Mostrar Especialistas -->
+
 <div class="especialistas">
   <button *ngFor="let especialista of especialistas" 
           (click)="seleccionarEspecialista(especialista)" 
@@ -31,7 +40,16 @@
 
 <!-- Mostrar Horarios Disponibles -->
 <div *ngIf="diaSeleccionado" class="horarios-disponibles">
-  <button *ngFor="let horario of horariosDisponibles" class="btn-cuadrado">
+  <button *ngFor="let horario of horariosDisponibles" 
+          (click)="seleccionarHorario(horario)" 
+          class="btn-cuadrado">
     {{ horario }}
+  </button>
+</div>
+
+<!-- Botón para confirmar el turno -->
+<div *ngIf="diaSeleccionado && horarioSeleccionado">
+  <button (click)="confirmarTurno()" class="btn-confirmar">
+    Confirmar Turno
   </button>
 </div>

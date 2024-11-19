@@ -1,1 +1,72 @@
-<p>turnos works!</p>
+<h2 class="text-center mt-5">Gestión de Turnos</h2>
+
+<!-- Filtros -->
+<div class="filters-wrapper">
+  <div class="filters-container">
+    <div class="filter-section">
+      <strong>Filtrar por Especialidad:</strong>
+      <div class="filter-options">
+        <span *ngFor="let especialidad of especialidades"
+              class="badge specialty-badge"
+              [class.active]="filtroEspecialidad === especialidad"
+              (click)="filtroEspecialidad = (filtroEspecialidad === especialidad ? '' : especialidad); aplicarFiltros()">
+          {{ especialidad }}
+        </span>
+      </div>
+    </div>
+    <div class="filter-section">
+      <strong>Filtrar por Especialista:</strong>
+      <div class="filter-options">
+        <span *ngFor="let especialista of especialistas"
+              class="badge specialist-badge"
+              [class.active]="filtroEspecialista === especialista"
+              (click)="filtroEspecialista = (filtroEspecialista === especialista ? '' : especialista); aplicarFiltros()">
+          {{ especialista }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de Turnos -->
+<div class="appointments-container">
+  <table class="table appointments-table">
+    <thead class="table-header">
+      <tr>
+        <th>ID</th>
+        <th>Especialidad</th>
+        <th>Especialista</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let turno of turnosFiltrados">
+        <td>{{ turno.id }}</td>
+        <td>{{ turno.especialidad }}</td>
+        <td>{{ turno.especialista }}</td>
+        <td>{{ turno.fecha }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="{
+            'status-warning': turno.estado === 'pendiente',
+            'status-success': turno.estado === 'aceptado',
+            'status-info': turno.estado === 'realizado',
+            'status-danger': turno.estado === 'rechazado' || turno.estado === 'cancelado'
+          }">
+            {{ turno.estado | uppercase }}
+          </span>
+        </td>
+        <td>
+          <button *ngIf="turno.estado === 'pendiente'" class="btn cancel-btn btn-sm" 
+            (click)="cancelarTurno(turno)">
+            Cancelar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="turnosFiltrados.length === 0">
+        <td colspan="5" class="no-appointments-text">No hay turnos disponibles.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

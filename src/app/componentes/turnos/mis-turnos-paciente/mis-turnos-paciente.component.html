@@ -1,21 +1,67 @@
-<div class="filtros">
-    <label>Filtrar por Especialidad:</label>
-    <input type="text" [(ngModel)]="filtroEspecialidad" (input)="filtrarTurnos()">
-    <label>Filtrar por Especialista:</label>
-    <input type="text" [(ngModel)]="filtroEspecialista" (input)="filtrarTurnos()">
-  </div>
-  
-  <div class="lista-turnos">
-    <div *ngFor="let turno of turnos" class="turno">
-      <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
-      <p><strong>Especialista:</strong> {{ turno.especialista }}</p>
-      <p><strong>Fecha:</strong> {{ turno.fecha | date }}</p>
-      <p><strong>Estado:</strong> {{ turno.estado }}</p>
-  
-      <!-- Mostrar acciones según el estado del turno -->
-      <button *ngIf="turno.estado !== 'realizado'" (click)="cancelarTurno(turno)">Cancelar Turno</button>
-      <button *ngIf="turno.tieneResena" (click)="verResena(turno)">Ver Resena</button>
-      <button *ngIf="turno.estado === 'realizado' && turno.tieneResena" (click)="completarEncuesta(turno)">Completar Encuesta</button>
-      <button *ngIf="turno.estado === 'realizado'" (click)="calificarAtencion(turno)">Calificar Atencion</button>
+<h2 class="text-center">Mis Turnos</h2>
+
+<!-- Filtros -->
+<div class="filters-container">
+  <div class="filter-group">
+    <strong>Filtrar por Especialidad:</strong>
+    <div class="filter-options">
+      <span *ngFor="let especialidad of especialidades"
+            class="filter-badge"
+            [class.active]="filtroEspecialidad === especialidad"
+            (click)="filtroEspecialidad = (filtroEspecialidad === especialidad ? '' : especialidad); aplicarFiltros()">
+        {{ especialidad }}
+      </span>
     </div>
   </div>
+
+  <div class="filter-group">
+    <strong>Filtrar por Especialista:</strong>
+    <div class="filter-options">
+      <span *ngFor="let especialista of especialistas"
+            class="filter-badge"
+            [class.active]="filtroEspecialista === especialista"
+            (click)="filtroEspecialista = (filtroEspecialista === especialista ? '' : especialista); aplicarFiltros()">
+        {{ especialista }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de Turnos -->
+<div class="appointments-list">
+  <div *ngFor="let turno of turnosFiltrados" class="appointment-card">
+    <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+    <p><strong>Especialista:</strong> {{ turno.especialista }}</p>
+    <p><strong>Fecha:</strong> {{ turno.fecha }}</p>
+    <p><strong>Estado:</strong> <span class="badge" [ngClass]="{
+      'badge-warning': turno.estado === 'pendiente',
+      'badge-success': turno.estado === 'aceptado',
+      'badge-info': turno.estado === 'realizado',
+      'badge-danger': turno.estado === 'rechazado' || turno.estado === 'cancelado'
+    }">{{ turno.estado | uppercase }}</span></p>
+    <p><strong>ID:</strong> {{ turno.id }}</p>
+
+    <!-- Botón para cancelar si el estado no es realizado -->
+    <div *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado'">
+      <button class="btn btn-danger" (click)="cancelarTurno(turno)">Cancelar Turno</button>
+    </div>
+
+    <!-- Botón para ver reseña si el turno tiene reseña -->
+    <div *ngIf="turno.diagnostico !== ''">
+      <button class="btn btn-primary" (click)="verDiagnostico(turno)">Ver Diagnostico</button>
+    </div>
+
+    <!-- Botón para completar encuesta si el turno está realizado y tiene reseña -->
+    <div *ngIf="turno.estado === 'realizado' && turno.tieneDiagnostico">
+      <button class="btn btn-success" (click)="completarEncuesta(turno)">Completar Encuesta</button>
+    </div>
+
+    <!-- Botón para calificar atención si el turno está realizado -->
+    <div *ngIf="turno.estado === 'realizado'">
+      <button class="btn btn-info" (click)="calificarAtencion(turno)">Calificar Atención</button>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay turnos -->
+  <p *ngIf="turnosFiltrados.length === 0" class="no-turnos-message">No hay turnos disponibles.</p>
+</div>

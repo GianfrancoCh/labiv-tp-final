@@ -1,27 +1,39 @@
 :host {
-    display: flex;
-    justify-content: center; 
-    align-items: center;   
-    height: 100vh;         
-    background: linear-gradient(135deg, #7e98f4, #ebb3b3); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #7e98f4, #ebb3b3);
+  padding: 20px;
+  box-sizing: border-box;
+  flex-direction: column; /* Mantener el contenedor principal en orientación vertical */
 }
+
 /* Estilos generales para el título */
 h3 {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Contenedor de especialistas */
+/* Contenedores de secciones */
 .especialistas,
 .especialidades,
 .dias-disponibles,
 .horarios-disponibles {
   display: flex;
+  flex-direction: row; /* Asegurarse de que los elementos dentro del contenedor sean horizontales */
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
+  gap: 15px; /* Espacio entre los elementos */
   margin-bottom: 20px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Botón redondo para especialistas */
@@ -37,7 +49,8 @@ h3 {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.3s;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 .btn-redondo img {
@@ -51,6 +64,7 @@ h3 {
   font-size: 12px;
   margin-top: 5px;
   color: #333;
+  font-weight: 600;
 }
 
 /* Botón cuadrado para especialidades */
@@ -59,13 +73,14 @@ h3 {
   border-radius: 10px;
   width: 120px;
   height: 120px;
-  background-color: #f4f4f4;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 .btn-cuadrado img {
@@ -79,18 +94,21 @@ h3 {
 .btn-cuadrado p {
   font-size: 14px;
   color: #333;
+  font-weight: 500;
 }
 
 /* Botón rectangular para días */
 .btn-rectangular {
   border: none;
   border-radius: 5px;
-  padding: 10px 15px;
+  padding: 10px 20px;
   background-color: #e0e0e0;
   color: #333;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Botón cuadrado para horarios */
@@ -101,12 +119,21 @@ h3 {
   font-size: 14px;
   background-color: #d1e8e4;
   color: #333;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Efecto de hover */
 button:hover {
   transform: scale(1.05);
   background-color: #c8d6e5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Efecto de active */
+button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilos responsivos */
@@ -120,5 +147,9 @@ button:hover {
   .btn-cuadrado img {
     width: 50px;
     height: 50px;
+  }
+
+  h3 {
+    font-size: 20px;
   }
 }

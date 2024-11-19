@@ -1,21 +1,33 @@
 <nav class="navbar">
-    <ul>
-      <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
-      <li *ngIf="!isLoggedIn"><a routerLink="/ingresar" routerLinkActive="active">Ingresar</a></li>
-      <li *ngIf="!isLoggedIn"><a routerLink="/registro" routerLinkActive="active">Registrarse</a></li>
-      
-      
-      <!-- Mostrar el botón de Logout si está logueado -->
-      <li *ngIf="isLoggedIn"><a routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
-      <li *ngIf="isLoggedIn"><a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a></li>
-      <li *ngIf="isLoggedIn"><a routerLink="/mis-turnos" routerLinkActive="active">Mis Turnos</a></li>
-      <li *ngIf="isLoggedIn"><a routerLink="/solicitar-turno" routerLinkActive="active">Solicitar Turno</a></li>
-      <li *ngIf="isLoggedIn" class="logout"><a (click)="logout()">Cerrar Sesión</a></li>
+  <ul>
+    <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
+    <li *ngIf="!isLoggedIn"><a routerLink="/ingresar" routerLinkActive="active">Ingresar</a></li>
+    <li *ngIf="!isLoggedIn"><a routerLink="/registro" routerLinkActive="active">Registrarse</a></li>
 
-    </ul>
-  </nav>
-  
-  
-  <router-outlet></router-outlet>
-  
-  
+    <!-- Mostrar elementos para usuarios logueados -->
+    <li *ngIf="isLoggedIn">
+      <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>
+    </li>
+    <li *ngIf="isLoggedIn && tipoUsuario === 'paciente' || tipoUsuario === 'especialista'">
+      <a routerLink="/mis-turnos" routerLinkActive="active">Mis Turnos</a>
+    </li>
+    <li *ngIf="isLoggedIn && tipoUsuario === 'paciente' || tipoUsuario === 'administrador'">
+      <a routerLink="/solicitar-turno" routerLinkActive="active">Solicitar Turno</a>
+    </li>
+
+    <!-- Mostrar elementos solo para administradores -->
+    <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
+      <a routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
+    </li>
+    <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
+      <a routerLink="/turnos" routerLinkActive="active">Gestionar Turnos</a>
+    </li>
+
+    <!-- Botón de Cerrar Sesión -->
+    <li *ngIf="isLoggedIn" class="logout">
+      <a (click)="logout()">Cerrar Sesión</a>
+    </li>
+  </ul>
+</nav>
+
+<router-outlet></router-outlet>

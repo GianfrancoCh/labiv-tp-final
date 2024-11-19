@@ -23,7 +23,8 @@ export const routes: Routes = [
     { path: 'mis-turnos', component: TurnosComponent, canActivate: [TurnosGuard]},
     { path: 'mis-turnos-paciente', component: MisTurnosPacienteComponent },
     { path: 'mis-turnos-especialista', component: MisTurnosEspecialistaComponent },  
-    { path: 'solicitar-turno', component: SolicitarTurnoComponent },             
+    { path: 'solicitar-turno', component: SolicitarTurnoComponent },   
+    { path: 'turnos', component: TurnosComponent, canActivate: [AdminGuard] },                       
     { path: '**', component: PageNotFoundComponent },
     
 ];
