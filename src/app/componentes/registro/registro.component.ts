@@ -8,12 +8,12 @@ import { Firestore, collection, setDoc, doc,getDocs, addDoc} from '@angular/fire
 import { Auth, sendEmailVerification } from '@angular/fire/auth';
 import { RecaptchaModule } from 'ng-recaptcha'; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { Especialidad } from '../../clases/especialidad';
 
-
-interface Especialidad {
-  id: string;
-  name: string;
-}
+// interface Especialidad {
+//   id: string;
+//   name: string;
+// }
 
 
 @Component({
@@ -75,6 +75,9 @@ export class RegistroComponent implements OnInit {
       }
       this.registroForm.get('especialidadNueva')?.updateValueAndValidity();
     });
+
+
+    console.log(this.especialidades)
   }
 
   get especialidadesArray(): FormArray {
@@ -87,8 +90,8 @@ export class RegistroComponent implements OnInit {
     
     if (especialidadId) {
       const especialidad = this.especialidades.find(esp => esp.id === especialidadId);
-      if (especialidad && !this.especialidadesArray.value.includes(especialidad.name)) {
-        this.especialidadesArray.push(this.fb.control(especialidad.name));
+      if (especialidad && !this.especialidadesArray.value.includes(especialidad.nombre)) {
+        this.especialidadesArray.push(this.fb.control(especialidad.nombre));
       }
     }
   }
@@ -113,12 +116,12 @@ export class RegistroComponent implements OnInit {
   
     try {
       const specialtiesRef = collection(this.firestore, 'especialidades');
-      const newSpec = { name: nuevaEspecialidad };
+      const newSpec = { nombre: nuevaEspecialidad };
   
       
       const docRef = await addDoc(specialtiesRef, newSpec);
   
-      this.especialidades.push({ id: docRef.id, name: nuevaEspecialidad });
+      this.especialidades.push({ id: docRef.id, nombre: nuevaEspecialidad });
   
       this.registroForm.get('nuevaEspecialidad')?.reset();
   

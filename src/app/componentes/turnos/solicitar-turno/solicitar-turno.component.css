@@ -133,7 +133,7 @@ h3 {
 
 /* Botón confirmar */
 .btn-confirmar {
-  padding: 12px 24px;
+  padding: 12px 12px;
   font-size: 1rem;
   font-weight: bold;
   border: none;
@@ -153,10 +153,10 @@ h3 {
 .dias-disponibles .btn-rectangular {
   padding: 10px 15px;
   border-radius: 5px;
-  background: #e7f0f8;
+  background: #ffffff;
   font-weight: bold;
   cursor: pointer;
-  color: #34568b;
+  color: #7592c0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -188,4 +188,15 @@ button:active {
   h3 {
     font-size: 20px;
   }
+}
+
+.active {
+  background-color: #4CAF50; /* Verde claro */
+  color: white;
+  font-weight: bold;
+  border: 3px solid #ff5353;
+}
+
+.active:hover {
+  background-color: #45a049;
 }

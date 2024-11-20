@@ -32,6 +32,7 @@ export class SolicitarTurnoComponent implements OnInit {
   pacienteSeleccionado: Usuario | null = null; // Paciente seleccionado por el administrador
 
   especialistaSeleccionado: any = null;
+  especialidadesEspecialista: any[] = [];
   especialidadSeleccionada: string = '';
   diaSeleccionado: string = '';
   horarioSeleccionado: string = '';
@@ -42,7 +43,9 @@ export class SolicitarTurnoComponent implements OnInit {
     try {
       this.usuario = await this.authService.getUserProfile();
       this.tipoUsuario = this.usuario?.tipoUsuario || '';
+      await this.cargarEspecialidades();
       await this.cargarEspecialistas();
+      console.log('Especialidades disponibles:', this.especialidades);
       
       // Si el usuario es un administrador, carga la lista de pacientes
       if (this.tipoUsuario === 'administrador') {
@@ -103,12 +106,61 @@ export class SolicitarTurnoComponent implements OnInit {
 
   seleccionarEspecialista(especialista: any) {
     this.especialistaSeleccionado = especialista;
-    this.especialidades = especialista.especialidades;
+    console.log('Especialista seleccionado:', especialista);
+  
+    this.especialidadesEspecialista = especialista.especialidades.map((especialidad: any) => {
+   
+      const especialidadCompleta = this.especialidades.find(espec => espec.nombre === especialidad.nombre);
+  
+      if (especialidadCompleta) {
+        return especialidadCompleta;
+      } else {
+        console.warn(`Especialidad desconocida: ${especialidad.nombre}`);
+        return new Especialidad(
+          'desconocido',
+          especialidad.nombre || 'Especialidad Desconocida',
+          'https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/especialidades%2Fespecialidad-por-defecto.png?alt=media&token=0218ba02-1cb2-47cb-b5d2-15f2b6687961'
+        );
+      }
+    });
+  
+    console.log('Especialidades del especialista:', this.especialidadesEspecialista);
   }
 
-  seleccionarEspecialidad(especialidad: any) {
+  
+  async cargarEspecialidades() {
+    try {
+      
+      const especialidadesRef = collection(this.firestore, 'especialidades');
+
+      const snapshot = await getDocs(especialidadesRef);
+
+      this.especialidades = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return new Especialidad(
+          doc.id, 
+          data['nombre'], 
+          data['imgUrl'] || 'https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/especialidades%2Fespecialidad-por-defecto.png?alt=media&token=0218ba02-1cb2-47cb-b5d2-15f2b6687961' // Imagen por defecto si falta
+        );
+      });
+      
+    } catch (error) {
+      console.error('Error al cargar especialidades:', error);
+    }
+  }
+  
+  seleccionarEspecialidad(especialidad: Especialidad) {
     this.especialidadSeleccionada = especialidad.nombre;
-    this.diasDisponibles = this.generarDiasDisponibles(especialidad.disponibilidad || []);
+    const disponibilidad = this.especialistaSeleccionado.especialidades
+      .find((e: any) => e.nombre === especialidad.nombre)?.disponibilidad;
+  
+    if (disponibilidad) {
+      this.diasDisponibles = this.generarDiasDisponibles(disponibilidad);
+      console.log('Días disponibles:', this.diasDisponibles);
+    } else {
+      console.warn('No se encontró disponibilidad para esta especialidad.');
+      this.diasDisponibles = [];
+    }
   }
 
   generarDiasDisponibles(disponibilidad: any[]): string[] {
@@ -116,7 +168,7 @@ export class SolicitarTurnoComponent implements OnInit {
     const hoy = moment();
     for (let i = 0; i < 15; i++) {
       const dia = hoy.clone().add(i, 'days');
-      const diaSemana = dia.format('dddd').toLowerCase();
+      const diaSemana = dia.format('dddd').toLowerCase(); // Día de la semana en minúscula
       const disponible = disponibilidad.some((d: any) => d.dia.toLowerCase() === diaSemana);
       if (disponible) {
         diasDisponibles.push(dia.format('YYYY-MM-DD'));
@@ -127,10 +179,12 @@ export class SolicitarTurnoComponent implements OnInit {
 
   seleccionarDia(dia: string) {
     this.diaSeleccionado = dia;
+    console.log("Día seleccionado:", dia);
+  
     const disponibilidad = this.especialistaSeleccionado.especialidades
       .find((e: any) => e.nombre === this.especialidadSeleccionada)
       ?.disponibilidad.filter((d: any) => d.dia.toLowerCase() === moment(dia).format('dddd').toLowerCase());
-
+  
     this.horariosDisponibles = [];
     if (disponibilidad && disponibilidad.length > 0) {
       disponibilidad.forEach((d: any) => {
@@ -145,9 +199,10 @@ export class SolicitarTurnoComponent implements OnInit {
       });
     }
   }
-
+  
   seleccionarHorario(horario: string) {
     this.horarioSeleccionado = horario;
+    console.log("Horario seleccionado:", horario);
   }
 
   async confirmarTurno() {
@@ -156,7 +211,7 @@ export class SolicitarTurnoComponent implements OnInit {
       console.error('Faltan datos para confirmar el turno');
       return;
     }
-
+    
     try {
       const turnosRef = collection(this.firestore, 'turnos');
       const turnoData: Turno = {

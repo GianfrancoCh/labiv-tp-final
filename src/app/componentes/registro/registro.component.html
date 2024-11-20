@@ -50,9 +50,6 @@
         <small *ngIf="registroForm.controls['obraSocial'].errors?.['required']">La obra social es obligatoria.</small>
       </div>
 
-      <label for="img1">Imagen 1:</label>
-      <input type="file" (change)="agregarImagen($event)" required>
-
       <label for="img2">Imagen 2:</label>
       <input type="file" (change)="agregarImagen($event)" required>
     </div>
@@ -64,7 +61,7 @@
       <label for="especialidad">Seleccionar Especialidad</label>
       <select (change)="agregarEspecialidadExistente($event)">
         <option value="" disabled selected>Selecciona una especialidad</option>
-        <option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp.name }}</option>
+        <option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp.nombre }}</option>
       </select>
     
       <!-- Lista de especialidades añadidas -->
@@ -80,10 +77,12 @@
       <button type="button" (click)="agregarEspecialidad()">Agregar</button>
     </div>
 
+   
+
+    <!-- Campos comunes -->
     <label for="img1">Imagen 1:</label>
     <input type="file" (change)="agregarImagen($event)" required>
 
-    <!-- Campos comunes -->
     <label for="email">Email</label>
     <input type="email" formControlName="email" id="email" required>
     <div *ngIf="registroForm.controls['email'].invalid && (registroForm.controls['email'].touched || registroForm.controls['email'].dirty)" class="error">

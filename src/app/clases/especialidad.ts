@@ -1,11 +1,11 @@
 export class Especialidad {
     id: string;
-    name: string;
-    imgUrl: string;
+    nombre: string;
+    imgUrl?: string;
   
-    constructor(id: string, name: string, imgUrl: string) {
+    constructor(id: string, nombre: string, imgUrl: string) {
       this.id = id;
-      this.name = name; 
+      this.nombre = nombre; 
       this.imgUrl = imgUrl;
     }
 }

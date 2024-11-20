@@ -5,6 +5,7 @@
   <table class="user-table">
     <thead>
       <tr>
+        <th>Imagen</th> <!-- Nueva columna -->
         <th>Nombre</th>
         <th>Apellido</th>
         <th>Email</th>
@@ -14,6 +15,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let usuario of usuarios">
+        <td>
+          <!-- Imagen del usuario -->
+          <img [src]="usuario.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'" alt="Imagen de {{ usuario.nombre }}" class="user-img">
+        </td>
         <td>{{ usuario.nombre }}</td>
         <td>{{ usuario.apellido }}</td>
         <td>{{ usuario.email }}</td>

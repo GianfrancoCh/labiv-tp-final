@@ -22,27 +22,32 @@
 
   <!-- Mostrar Especialidades -->
   <div *ngIf="especialistaSeleccionado" class="especialidades">
-    <button *ngFor="let especialidad of especialidades" 
+    <button *ngFor="let especialidad of especialidadesEspecialista" 
             (click)="seleccionarEspecialidad(especialidad)" 
             class="btn-cuadrado">
-      <img [src]="especialidad.imagen || 'https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/especialidades%2Fespecialidad-por-defecto.png?alt=media&token=0218ba02-1cb2-47cb-b5d2-15f2b6687961'" alt="{{ especialidad.nombre }}">
+      <img [src]="especialidad.imgUrl" alt="{{ especialidad.nombre }}">
       <p>{{ especialidad.nombre }}</p>
     </button>
   </div>
 
   <!-- Mostrar Días Disponibles -->
-  <div *ngIf="especialidadSeleccionada" class="dias-disponibles">
+  <div *ngIf="diasDisponibles.length > 0" class="dias-disponibles">
     <button *ngFor="let dia of diasDisponibles" 
             (click)="seleccionarDia(dia)" 
+            [ngClass]="{'active': dia === diaSeleccionado}" 
             class="btn-rectangular">
       {{ dia }}
     </button>
   </div>
-
+  <div *ngIf="diasDisponibles.length === 0 && especialidadSeleccionada != ''">
+    <p>No hay días disponibles para esta especialidad.</p>
+  </div>
+  
   <!-- Mostrar Horarios Disponibles -->
   <div *ngIf="diaSeleccionado" class="horarios-disponibles">
     <button *ngFor="let horario of horariosDisponibles" 
             (click)="seleccionarHorario(horario)" 
+            [ngClass]="{'active': horario === horarioSeleccionado}" 
             class="btn-cuadrado">
       {{ horario }}
     </button>
