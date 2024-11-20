@@ -1,56 +1,93 @@
 :host {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Cambiar el centrado vertical */
   align-items: center;
   height: 100vh;
   background: linear-gradient(135deg, #7e98f4, #ebb3b3);
-  padding: 20px;
+  padding: 40px 20px; /* Incrementar el padding superior */
   box-sizing: border-box;
-  flex-direction: column; /* Mantener el contenedor principal en orientación vertical */
+  flex-direction: column;
 }
 
-/* Estilos generales para el título */
+/* Estilos generales para el contenedor principal */
+.solicitar-turno-container {
+  font-family: system-ui;
+  width: 90%;
+  max-width: 800px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 3px solid #000000;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Centrar horizontalmente */
+  margin-top: 30px; /* Elevar el contenedor */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Estilo para el título */
 h3 {
-  text-align: center;
-  color: #fff;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
   font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 25px;
+  font-weight: bold;
+  text-align: center;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Contenedores de secciones */
+/* Pacientes */
+.pacientes {
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pacientes label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.pacientes select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+/* Contenedores de opciones */
 .especialistas,
 .especialidades,
 .dias-disponibles,
 .horarios-disponibles {
   display: flex;
-  flex-direction: row; /* Asegurarse de que los elementos dentro del contenedor sean horizontales */
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 15px; /* Espacio entre los elementos */
-  margin-bottom: 20px;
+  gap: 15px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Botón redondo para especialistas */
+/* Botón redondo */
 .btn-redondo {
-  border: none;
-  border-radius: 50%;
   width: 100px;
   height: 100px;
-  overflow: hidden;
-  background-color: #f4f4f4;
+  border-radius: 50%;
+  background: #f4f4f4;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s, background-color 0.3s;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 .btn-redondo img {
@@ -63,80 +100,79 @@ h3 {
 .btn-redondo p {
   font-size: 12px;
   margin-top: 5px;
-  color: #333;
-  font-weight: 600;
+  color: #555;
 }
 
-/* Botón cuadrado para especialidades */
+/* Botón cuadrado */
 .btn-cuadrado {
-  border: none;
-  border-radius: 10px;
   width: 120px;
   height: 120px;
-  background-color: #ffffff;
+  border-radius: 10px;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.3s;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
 }
 
 .btn-cuadrado img {
   width: 60px;
   height: 60px;
-  object-fit: cover;
-  margin-bottom: 5px;
-  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .btn-cuadrado p {
   font-size: 14px;
+  text-align: center;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
 }
 
-/* Botón rectangular para días */
-.btn-rectangular {
+/* Botón confirmar */
+.btn-confirmar {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
   border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  background-color: #e0e0e0;
-  color: #333;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.3s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #34568b;
+  color: white;
 }
 
-/* Botón cuadrado para horarios */
-.horarios-disponibles .btn-cuadrado {
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
-  font-size: 14px;
-  background-color: #d1e8e4;
-  color: #333;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.btn-confirmar:hover {
+  background-color: #2c4573;
+  transform: scale(1.05);
 }
 
-/* Efecto de hover */
+/* Días disponibles */
+.dias-disponibles .btn-rectangular {
+  padding: 10px 15px;
+  border-radius: 5px;
+  background: #e7f0f8;
+  font-weight: bold;
+  cursor: pointer;
+  color: #34568b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover efecto global */
 button:hover {
   transform: scale(1.05);
-  background-color: #c8d6e5;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Efecto de active */
+/* Estilo de botones en estado activo */
 button:active {
   transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Estilos responsivos */
+/* Responsivo */
 @media (max-width: 768px) {
   .btn-redondo,
   .btn-cuadrado {

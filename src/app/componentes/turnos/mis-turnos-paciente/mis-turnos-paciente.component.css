@@ -4,23 +4,36 @@
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  background: linear-gradient(135deg, #4b6790, #c3e2df);
   padding: 40px 20px;
   box-sizing: border-box;
 }
 
-h2 {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  margin-top:20px;
-  margin-bottom: 20px; /* Reducido para acercar más al contenedor de filtros */
-  text-align: center;
+.turnos-container {
+  font-family: system-ui;
+  border: 3px solid #000000;
+  width: 90%;
+  max-width: 1000px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
 }
 
+h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.appointments-list {
+  padding: 10px;
+}
 .filters-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  border: 1px solid #000000;
   gap: 15px; /* Reducido para acercar los filtros entre sí */
   margin-bottom: 10px; /* Reducido para acercar al listado de turnos */
   background-color: #ffffff;
@@ -31,6 +44,7 @@ h2 {
 }
 
 .filter-group {
+  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,9 +79,11 @@ h2 {
 }
 
 .appointments-list {
-  width: 100%;
-  max-width: 800px;
-  margin-top: 10px; /* Reducido para acercar la lista de turnos a los filtros */
+
+  padding: 10px 15px;
+  margin-top: 10px; 
+  border: 1px solid #000000;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   gap: 15px;

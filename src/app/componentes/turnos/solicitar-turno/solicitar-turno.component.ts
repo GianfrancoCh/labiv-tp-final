@@ -8,6 +8,7 @@ import { Usuario } from '../../../clases/usuario';
 import { Turno } from '../../../clases/turno';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Especialidad } from '../../../clases/especialidad';
 
 moment.locale('es'); // Configura Moment.js para usar el español
 
