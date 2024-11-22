@@ -12,22 +12,26 @@
 
   <!-- Mostrar Especialistas -->
   <div class="especialistas">
-    <button *ngFor="let especialista of especialistas" 
-            (click)="seleccionarEspecialista(especialista)" 
-            class="btn-redondo">
-      <img [src]="especialista.imagen" alt="{{ especialista.nombre }}">
-      <p>{{ especialista.nombre }} {{ especialista.apellido }}</p>
-    </button>
+    <div *ngFor="let especialista of especialistas" class="especialista-card">
+      <p class="especialista-nombre">{{ especialista.nombre }} {{ especialista.apellido }}</p>
+      <button 
+        (click)="seleccionarEspecialista(especialista)" 
+        class="btn-redondo">
+        <img [src]="especialista.imagen" alt="{{ especialista.nombre }}">
+      </button>
+    </div>
   </div>
-
   <!-- Mostrar Especialidades -->
-  <div *ngIf="especialistaSeleccionado" class="especialidades">
-    <button *ngFor="let especialidad of especialidadesEspecialista" 
-            (click)="seleccionarEspecialidad(especialidad)" 
-            class="btn-cuadrado">
-      <img [src]="especialidad.imgUrl" alt="{{ especialidad.nombre }}">
-      <p>{{ especialidad.nombre }}</p>
-    </button>
+  <div *ngIf="especialistaSeleccionado" class="especialidades-container">
+    <p class="especialidades-titulo">Especialidades de {{especialistaSeleccionado.nombre}}</p>
+    <div class="especialidades">
+      <button *ngFor="let especialidad of especialidadesEspecialista" 
+              (click)="seleccionarEspecialidad(especialidad)" 
+              class="btn-cuadrado">
+        <img [src]="especialidad.imgUrl" alt="{{ especialidad.nombre }}">
+        <p>{{ especialidad.nombre }}</p>
+      </button>
+    </div>
   </div>
 
   <!-- Mostrar Días Disponibles -->
@@ -48,7 +52,7 @@
     <button *ngFor="let horario of horariosDisponibles" 
             (click)="seleccionarHorario(horario)" 
             [ngClass]="{'active': horario === horarioSeleccionado}" 
-            class="btn-cuadrado">
+            class="btn-horario">
       {{ horario }}
     </button>
   </div>
