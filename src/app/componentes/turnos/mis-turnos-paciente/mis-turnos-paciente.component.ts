@@ -16,10 +16,10 @@ import Swal from 'sweetalert2';
 export class MisTurnosPacienteComponent implements OnInit {
   turnos: Turno[] = []; 
   turnosFiltrados: Turno[] = [];
-  filtroEspecialidad: string = '';
-  filtroEspecialista: string = '';
+  filtroGlobal: string = '';
   especialidades: string[] = [];
   especialistas: string[] = [];
+  pacientes: string[] = [];
   usuario: any; 
 
   constructor(private firestore: Firestore, private authService: AuthService) {}
@@ -35,42 +35,54 @@ export class MisTurnosPacienteComponent implements OnInit {
 
   async cargarTurnos() {
     const turnosRef = collection(this.firestore, 'turnos');
-    const q = query(turnosRef, where('paciente', '==', this.usuario.uid));
+    const q = query(turnosRef, where('paciente', '==', this.usuario.uid)); // Cambia la condición según tu lógica
     const snapshot = await getDocs(q);
   
-    this.turnos = snapshot.docs.map(doc => {
-      const data = doc.data();
-      const fecha = (data['fecha'] && data['fecha'].seconds) 
-        ? new Date(data['fecha'].seconds * 1000) 
-        : new Date();
-  
-      // Asegúrate de incluir todas las propiedades necesarias
+    const turnos: Turno[] = snapshot.docs.map(doc => {
+      const data = doc.data() as any;
+      if (data.fecha && data.fecha.seconds) {
+        data.fecha = new Date(data.fecha.seconds * 1000);
+      }
       return new Turno(
         doc.id,
-        fecha,
-        data['estado'],
-        data['especialidad'],
-        data['paciente'],
-        data['especialista'],
-        data['diagnostico'], // Incluye el diagnóstico
-        data['tieneDiagnostico'], // Incluye el flag de diagnóstico
-        data['motivoCancelacion'],
-        data['motivoRechazo'],
-        data['tieneResena'],
-        data['resena']
+        data.fecha,
+        data.estado,
+        data.especialidad,
+        data.paciente,
+        data.especialista
       );
     });
-    
+  
+    for (let turno of turnos) {
+      // Obtener nombre del especialista
+      if (turno.especialista) {
+        const especialistaRef = doc(this.firestore, 'usuarios', turno.especialista);
+        const especialistaSnapshot = await getDoc(especialistaRef);
+        if (especialistaSnapshot.exists()) {
+          turno.especialistaNombre = especialistaSnapshot.data()['nombre'];
+        } else {
+          turno.especialistaNombre = 'Desconocido';
+        }
+      }
+    }
+  
+    this.turnos = turnos;
     this.turnosFiltrados = [...this.turnos];
-    this.especialidades = Array.from(new Set(this.turnos.map(turno => turno.especialidad ?? ''))).filter(Boolean);
-    this.especialistas = Array.from(new Set(this.turnos.map(turno => turno.especialista ?? ''))).filter(Boolean);
+  
+    // Configurar especialidades y nombres de especialistas únicos
+    this.especialidades = Array.from(new Set(this.turnos.map(turno => turno.especialidad ?? ''))).filter(Boolean) as string[];
+    this.especialistas = Array.from(new Set(this.turnos.map(turno => turno.especialistaNombre ?? ''))).filter(Boolean) as string[];
   }
 
-  aplicarFiltros() {
+  aplicarFiltroGlobal() {
+    const filtro = this.filtroGlobal.toLowerCase();
+    
     this.turnosFiltrados = this.turnos.filter(turno => {
-      const coincideEspecialidad = !this.filtroEspecialidad || turno.especialidad === this.filtroEspecialidad;
-      const coincideEspecialista = !this.filtroEspecialista || turno.especialista === this.filtroEspecialista;
-      return coincideEspecialidad && coincideEspecialista;
+      return (
+        (turno.estado && turno.estado.toLowerCase().includes(filtro)) ||
+        (turno.especialistaNombre && turno.especialistaNombre.toLowerCase().includes(filtro)) ||
+        (turno.especialidad && turno.especialidad.toLowerCase().includes(filtro))
+      );
     });
   }
 

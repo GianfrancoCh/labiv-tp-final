@@ -30,17 +30,21 @@
     gap: 30px;
   }
   
-  .filter-section {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    font-weight: bold;
+  .filter-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .filter-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+  .filter-input:focus {
+    border-color: #34568b;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
+  
   
   /* Estilos para las etiquetas de filtro */
   .badge {

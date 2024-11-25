@@ -3,29 +3,13 @@
 
   <!-- Filtros -->
   <div class="filters-container">
-    <div class="filter-group">
-      <strong>Filtrar por Especialidad:</strong>
-      <div class="filter-options">
-        <span *ngFor="let especialidad of especialidades"
-              class="filter-badge"
-              [class.active]="filtroEspecialidad === especialidad"
-              (click)="filtroEspecialidad = (filtroEspecialidad === especialidad ? '' : especialidad); filtrarTurnos()">
-          {{ especialidad }}
-        </span>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <strong>Filtrar por Paciente:</strong>
-      <div class="filter-options">
-        <span *ngFor="let paciente of pacientes"
-              class="filter-badge"
-              [class.active]="filtroPaciente === paciente"
-              (click)="filtroPaciente = (filtroPaciente === paciente ? '' : paciente); filtrarTurnos()">
-          {{ paciente }}
-        </span>
-      </div>
-    </div>
+    <input
+      type="text"
+      [(ngModel)]="filtroGlobal"
+      (input)="aplicarFiltroGlobal()"
+      placeholder="Filtrar turnos por estado, especialidad o paciente..."
+      class="filter-input"
+    />
   </div>
 
   <!-- Lista de Turnos -->

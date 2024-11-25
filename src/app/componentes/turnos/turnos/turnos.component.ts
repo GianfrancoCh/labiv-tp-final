@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Firestore, collection, getDocs, doc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, doc, updateDoc,getDoc, query, where } from '@angular/fire/firestore';
 import { AuthService } from '../../../servicios/auth.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Turno } from '../../../clases/turno'; 
 
 @Component({
@@ -11,15 +11,14 @@ import { Turno } from '../../../clases/turno';
   templateUrl: './turnos.component.html',
   styleUrls: ['./turnos.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
 export class TurnosComponent implements OnInit {
   turnos: Turno[] = [];
   turnosFiltrados: Turno[] = [];
   especialidades: string[] = [];
   especialistas: string[] = [];
-  filtroEspecialidad: string = '';
-  filtroEspecialista: string = '';
+  filtro: string = '';
   usuario: any;
 
   constructor(private firestore: Firestore, private authService: AuthService) {}
@@ -37,23 +36,45 @@ export class TurnosComponent implements OnInit {
     const snapshot = await getDocs(turnosRef);
 
     // Usando la clase Turno para mapear los datos
-    this.turnos = snapshot.docs.map(doc => {
-      const data = doc.data();
-      // Convierte Timestamp a Date usando la clase Turno
-      const fecha = (data['fecha'] && data['fecha'].seconds) 
-        ? new Date(data['fecha'].seconds * 1000) 
-        : new Date();
-
+    const turnos: Turno[] = snapshot.docs.map(doc => {
+      const data = doc.data() as any;
+      if (data.fecha && data.fecha.seconds) {
+        data.fecha = new Date(data.fecha.seconds * 1000);
+      }
       return new Turno(
         doc.id,
-        fecha,
-        data['estado'],
-        data['especialidad'],
-        data['paciente'],
-        data['especialista']
+        data.fecha,
+        data.estado,
+        data.especialidad,
+        data.paciente,
+        data.especialista
       );
     });
 
+    for (let turno of turnos) {
+      // Obtener nombre del especialista
+      if (turno.especialista) {
+        const especialistaRef = doc(this.firestore, 'usuarios', turno.especialista);
+        const especialistaSnapshot = await getDoc(especialistaRef);
+        if (especialistaSnapshot.exists()) {
+          turno.especialistaNombre = especialistaSnapshot.data()['nombre'];
+        } else {
+          turno.especialistaNombre = 'Desconocido';
+        }
+      }
+
+      if (turno.paciente) {
+        const pacienteRef = doc(this.firestore, 'usuarios', turno.paciente);
+        const pacienteSnapshot = await getDoc(pacienteRef);
+        if (pacienteSnapshot.exists()) {
+          turno.pacienteNombre = pacienteSnapshot.data()['nombre'];
+        } else {
+          turno.pacienteNombre = 'Desconocido';
+        }
+      }
+    }
+
+    this.turnos = turnos;
     this.turnosFiltrados = [...this.turnos];
 
     // Obtener especialidades y especialistas únicos para los filtros
@@ -61,12 +82,16 @@ export class TurnosComponent implements OnInit {
     this.especialistas = Array.from(new Set(this.turnos.map(turno => turno.especialista ?? ''))).filter(Boolean);
   }
 
-  aplicarFiltros() {
-    this.turnosFiltrados = this.turnos.filter(turno => {
-      const coincideEspecialidad = !this.filtroEspecialidad || turno.especialidad === this.filtroEspecialidad;
-      const coincideEspecialista = !this.filtroEspecialista || turno.especialista === this.filtroEspecialista;
-      return coincideEspecialidad && coincideEspecialista;
-    });
+
+
+  aplicarFiltro() {
+    const filtroLower = this.filtro.toLowerCase();
+    this.turnosFiltrados = this.turnos.filter(turno =>
+      (turno.especialidad?.toLowerCase().includes(filtroLower) ||
+      turno.especialistaNombre?.toLowerCase().includes(filtroLower) ||
+      turno.pacienteNombre?.toLowerCase().includes(filtroLower) ||
+      turno.estado?.toLowerCase().includes(filtroLower))
+    );
   }
 
   async cancelarTurno(turno: Turno) {

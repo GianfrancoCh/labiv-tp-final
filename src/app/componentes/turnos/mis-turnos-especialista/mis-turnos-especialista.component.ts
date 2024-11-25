@@ -18,8 +18,7 @@ export class MisTurnosEspecialistaComponent implements OnInit {
   turnosFiltrados: Turno[] = [];
   especialidades: string[] = [];
   pacientes: string[] = [];
-  filtroEspecialidad: string = '';
-  filtroPaciente: string = '';
+  filtroGlobal: string = '';
   usuario: any; 
 
   constructor(private firestore: Firestore, private authService: AuthService) {}
@@ -67,11 +66,15 @@ export class MisTurnosEspecialistaComponent implements OnInit {
     this.pacientes = Array.from(new Set(this.turnos.map(turno => turno.pacienteNombre ?? ''))).filter(Boolean) as string[];
   }
 
-  filtrarTurnos() {
+  aplicarFiltroGlobal() {
+    const filtro = this.filtroGlobal.toLowerCase();
+  
     this.turnosFiltrados = this.turnos.filter(turno => {
-      const coincideEspecialidad = !this.filtroEspecialidad || turno.especialidad === this.filtroEspecialidad;
-      const coincidePaciente = !this.filtroPaciente || turno.pacienteNombre === this.filtroPaciente;
-      return coincideEspecialidad && coincidePaciente;
+      return (
+        (turno.estado && turno.estado.toLowerCase().includes(filtro)) ||
+        (turno.especialidad && turno.especialidad.toLowerCase().includes(filtro)) ||
+        (turno.pacienteNombre && turno.pacienteNombre.toLowerCase().includes(filtro))
+      );
     });
   }
 

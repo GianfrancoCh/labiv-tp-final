@@ -3,36 +3,20 @@
 
   <!-- Filtros -->
   <div class="filters-container">
-    <div class="filter-group">
-      <strong>Filtrar por Especialidad:</strong>
-      <div class="filter-options">
-        <span *ngFor="let especialidad of especialidades"
-              class="filter-badge"
-              [class.active]="filtroEspecialidad === especialidad"
-              (click)="filtroEspecialidad = (filtroEspecialidad === especialidad ? '' : especialidad); aplicarFiltros()">
-          {{ especialidad }}
-        </span>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <strong>Filtrar por Especialista:</strong>
-      <div class="filter-options">
-        <span *ngFor="let especialista of especialistas"
-              class="filter-badge"
-              [class.active]="filtroEspecialista === especialista"
-              (click)="filtroEspecialista = (filtroEspecialista === especialista ? '' : especialista); aplicarFiltros()">
-          {{ especialista }}
-        </span>
-      </div>
-    </div>
+    <input
+      type="text"
+      [(ngModel)]="filtroGlobal"
+      (input)="aplicarFiltroGlobal()"
+      placeholder="Filtrar turnos por cualquier campo..."
+      class="filter-input"
+    />
   </div>
 
   <!-- Tabla de Turnos -->
   <div class="appointments-list">
     <div *ngFor="let turno of turnosFiltrados" class="appointment-card">
       <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
-      <p><strong>Especialista:</strong> {{ turno.especialista }}</p>
+      <p><strong>Especialista:</strong> {{ turno.especialistaNombre }}</p>
       <p><strong>Fecha:</strong> {{ turno.fecha }}</p>
       <p><strong>Estado:</strong> <span class="badge" [ngClass]="{
         'badge-warning': turno.estado === 'pendiente',

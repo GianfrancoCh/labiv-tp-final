@@ -6,6 +6,7 @@ export class Turno {
   paciente: string; // ID del paciente
   especialista: string; // ID del especialista
   pacienteNombre?: string; // Nombre del paciente
+  especialistaNombre?: string; // Nombre del especialista
   tieneResena?: boolean;
   tieneDiagnostico?: boolean;
   resena?: string;
@@ -22,6 +23,7 @@ export class Turno {
     paciente: string,
     especialista: string,
     pacienteNombre?: string,
+    especialistaNombre?: string,
     tieneResena?: boolean,
     tieneDiagnostico?: boolean,
     resena?: string,
@@ -37,6 +39,7 @@ export class Turno {
     this.paciente = paciente;
     this.especialista = especialista;
     this.pacienteNombre = pacienteNombre;
+    this.especialistaNombre = especialistaNombre;
     this.tieneResena = tieneResena;
     this.tieneDiagnostico = tieneDiagnostico;
     this.resena = resena;
