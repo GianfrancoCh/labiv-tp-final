@@ -1,27 +1,47 @@
-# LabivTpFinal
+TP FINAL "CLINICA ONLINE"
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.9.
+Home / Pagina Bienvenida
+![image](https://github.com/user-attachments/assets/0c1e57f9-a733-45b9-9829-6b72dcd5728b)
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Login, con botones de usuarios para acceso rápido
+![image](https://github.com/user-attachments/assets/7df62571-0118-4af3-98e1-f427111bdd93)
 
-## Code scaffolding
+Registro, para pacientes y especialistas
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+![image](https://github.com/user-attachments/assets/24da917e-d1ee-4dc2-bf67-ee49c04ae536)
 
-## Build
+Seccion Mi Perfil para Pacientes, donde pueden ver su historia clinica y diferentes datos. Tambien pueden descargar la historia clinica en PDF
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+https://github.com/user-attachments/assets/2da8c1ba-43ae-455d-9264-2ff176c81fa1
 
-## Running unit tests
+Seccion Mi Perfil para Especialista, donde pueden ver sus datos y modificar la dispinibilidad horario para sus especialidades
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+![image](https://github.com/user-attachments/assets/79cacf31-9210-47bf-9f9b-c41d3dbe7eec)
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Seccion Solicitar Turno para los usuarios pacientes, donde pueden solicitar un turno en simples pasos
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+https://github.com/user-attachments/assets/1a6bea70-7153-4ef9-93cf-865e0f89f04a
+
+
+
+Seccion Solicitar Turno desde un perfil de tipo Admin, donde pueden solicitar un turno para algun paciente en simples pasos
+
+
+https://github.com/user-attachments/assets/cae216f6-57b2-4f5f-8e8f-3cc216f85204
+
+
+Seccions Mis Turnos para los pacientes, donde pueden ver sus turnos, filtrarlos y  realizar diferentes acciones
+
+
+https://github.com/user-attachments/assets/9f3920ac-6433-42a0-ad30-a12f6a2b518e
+
+Seccions Mis Turnos para los especialistas, donde al igual que los pacientes pueden ver sus turnos, filtrarlos y  realizar diferentes acciones
+
+![image](https://github.com/user-attachments/assets/b7ecac8c-0e1b-44b9-b481-23f808c25706)
+
+
+
+
