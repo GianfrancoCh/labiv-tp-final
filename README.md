@@ -31,3 +31,11 @@ Seccion Solicitar Turno desde un perfil de tipo Admin, donde pueden solicitar un
 
 https://github.com/user-attachments/assets/cae216f6-57b2-4f5f-8e8f-3cc216f85204
 
+
+Seccions Mis Turnos para los pacientes, donde pueden ver sus turnos, filtrarlos y  realizar diferentes acciones
+
+
+https://github.com/user-attachments/assets/9f3920ac-6433-42a0-ad30-a12f6a2b518e
+
+
+
