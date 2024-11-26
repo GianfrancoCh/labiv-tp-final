@@ -37,5 +37,10 @@ Seccions Mis Turnos para los pacientes, donde pueden ver sus turnos, filtrarlos 
 
 https://github.com/user-attachments/assets/9f3920ac-6433-42a0-ad30-a12f6a2b518e
 
+Seccions Mis Turnos para los especialistas, donde al igual que los pacientes pueden ver sus turnos, filtrarlos y  realizar diferentes acciones
+
+![image](https://github.com/user-attachments/assets/b7ecac8c-0e1b-44b9-b481-23f808c25706)
+
+
 
 
