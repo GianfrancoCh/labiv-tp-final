@@ -23,6 +23,12 @@
       <a routerLink="/turnos" routerLinkActive="active">Gestionar Turnos</a>
     </li>
 
+    <!-- Mostrar elementos solo para especialistas -->
+    <li *ngIf="isLoggedIn && tipoUsuario === 'especialista'">
+      <a routerLink="/pacientes" routerLinkActive="active">Pacientes</a>
+    </li>
+
+
     <!-- Botón de Cerrar Sesión -->
     <li *ngIf="isLoggedIn" class="logout">
       <a (click)="logout()">Cerrar Sesión</a>

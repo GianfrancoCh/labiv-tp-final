@@ -11,6 +11,7 @@ import { TurnosGuard } from './guards/turnos.guard';
 import { MisTurnosEspecialistaComponent } from './componentes/turnos/mis-turnos-especialista/mis-turnos-especialista.component';
 import { MisTurnosPacienteComponent } from './componentes/turnos/mis-turnos-paciente/mis-turnos-paciente.component';
 import { SolicitarTurnoComponent } from './componentes/turnos/solicitar-turno/solicitar-turno.component';
+import { PacientesComponent } from './componentes/pacientes/pacientes.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
@@ -24,7 +25,8 @@ export const routes: Routes = [
     { path: 'mis-turnos-paciente', component: MisTurnosPacienteComponent },
     { path: 'mis-turnos-especialista', component: MisTurnosEspecialistaComponent },  
     { path: 'solicitar-turno', component: SolicitarTurnoComponent },   
-    { path: 'turnos', component: TurnosComponent, canActivate: [AdminGuard] },                       
+    { path: 'turnos', component: TurnosComponent, canActivate: [AdminGuard] },   
+    { path: 'pacientes', component: PacientesComponent},                    
     { path: '**', component: PageNotFoundComponent },
     
 ];

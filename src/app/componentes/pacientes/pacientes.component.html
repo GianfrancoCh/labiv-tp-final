@@ -1,0 +1,38 @@
+<h1>ESTA EN PROCESO</h1>
+<div *ngIf="pacientes.length > 0; else noPacientes">
+    <h2 class="text-center">Pacientes Atendidos</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Edad</th>
+          <th>DNI</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paciente of pacientes">
+          <td>
+            <img
+              [src]="paciente.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'"
+              alt="Imagen de {{ paciente.nombre }}"
+              class="img-thumbnail"
+              style="width: 50px; height: 50px; object-fit: cover;"
+            />
+          </td>
+          <td>{{ paciente.nombre }}</td>
+          <td>{{ paciente.apellido }}</td>
+          <td>{{ paciente.edad }}</td>
+          <td>{{ paciente.dni }}</td>
+          <td>{{ paciente.email }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <ng-template #noPacientes>
+    <p class="text-center">No hay pacientes atendidos registrados para este especialista.</p>
+  </ng-template>
+  
