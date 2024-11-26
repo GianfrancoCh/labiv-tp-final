@@ -21,7 +21,7 @@ Seccion Mi Perfil para Especialista, donde pueden ver sus datos y modificar la d
 
 Seccion Solicitar Turno para los usuarios pacientes, donde pueden solicitar un turno en simples pasos
 
-https://github.com/user-attachments/assets/9d5ccb4c-9437-425f-9172-755ec45c6dab
+
 
 
 Seccion Solicitar Turno desde un perfil de tipo Admin, donde pueden solicitar un turno para algun paciente en simples pasos
