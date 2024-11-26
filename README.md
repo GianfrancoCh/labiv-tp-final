@@ -14,4 +14,8 @@ Registro, para pacientes y especialistas
 Seccion Mi Perfil para Pacientes, donde pueden ver su historia clinica y diferentes datos. Tambien pueden descargar la historia clinica en PDF
 ![image](https://github.com/user-attachments/assets/79cf2544-d5bc-4147-b2df-61d7ec1003c5)
 
+Seccion Mi Perfil para Especialista, donde pueden ver sus datos y modificar la dispinibilidad horario para sus especialidades
+
+![image](https://github.com/user-attachments/assets/79cacf31-9210-47bf-9f9b-c41d3dbe7eec)
+
 
