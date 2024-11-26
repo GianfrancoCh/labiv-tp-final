@@ -42,6 +42,12 @@ Seccions Mis Turnos para los especialistas, donde al igual que los pacientes pue
 
 ![image](https://github.com/user-attachments/assets/b7ecac8c-0e1b-44b9-b481-23f808c25706)
 
+Seccion Usuarios de los usuarios admin, donde pueden ver todos los usuarios, Habilitar/Inhabilitar especialistas, Ver historias clinicas de los pacientes, descargar un excel con todos los usuarios y crear cualquier tipo de usuario
+
+https://github.com/user-attachments/assets/c5a5c029-5964-409e-ad2a-c600bc3e6893
+
+
+
 
 
 
