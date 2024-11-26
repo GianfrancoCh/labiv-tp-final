@@ -56,6 +56,13 @@
           Calificar Atención
         </button>
         <button
+          *ngIf="turno.estado === 'realizado'"
+          class="btn btn-info"
+          (click)="verResena(turno)"
+        >
+          Ver Reseña
+        </button>
+        <button
           *ngIf="turno.comentario && turno.comentario.trim() !== ''"
           class="btn btn-warning"
           (click)="verComentario(turno)"

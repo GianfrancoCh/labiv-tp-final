@@ -229,7 +229,8 @@ export class SolicitarTurnoComponent implements OnInit {
         resenaEspecialista: '',
         resenaPaciente: '',
         diagnostico: '',
-        comentario: ''
+        comentario: '',
+        encuesta: ''
       };
 
       const nuevoTurnoDoc = await addDoc(turnosRef, turnoData);

@@ -12,6 +12,7 @@ export class Turno {
   encuestaPaciente?: string;
   comentario: string = '';
   diagnostico: string;
+  encuesta: string = '';
 
   constructor(
     id: string,
@@ -25,7 +26,8 @@ export class Turno {
     resenaPaciente: string = '',
     resenaEspecialista: string = '',
     comentario: string = '',
-    diagnostico: string = ''
+    diagnostico: string = '',
+    encuesta: string = ''
   ) {
     this.id = id;
     this.fecha = fecha;
@@ -39,5 +41,6 @@ export class Turno {
     this.resenaEspecialista = resenaEspecialista;
     this.comentario = comentario;
     this.diagnostico = diagnostico;
+    this.encuesta = encuesta;
   }
 }

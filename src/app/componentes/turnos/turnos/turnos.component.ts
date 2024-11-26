@@ -47,7 +47,13 @@ export class TurnosComponent implements OnInit {
         data.estado,
         data.especialidad,
         data.paciente,
-        data.especialista
+        data.especialista,
+        data.pacienteNombre,
+        data.especialistaNombre,
+        data.resenaPaciente,
+        data.resenaEspecialista,
+        data.comentario,
+        data.diagnostico
       );
     });
 

@@ -54,7 +54,8 @@ export class MisTurnosEspecialistaComponent implements OnInit {
         data.resenaPaciente,
         data.resenaEspecialista,
         data.comentario,
-        data.diagnostico
+        data.diagnostico,
+        data.encuesta
       );
     });
 
@@ -171,23 +172,47 @@ export class MisTurnosEspecialistaComponent implements OnInit {
 
   async finalizarTurno(turno: Turno) {
     if (turno.estado === 'aceptado') {
-      const { value: diagnostico } = await Swal.fire({
+      const { value: formValues } = await Swal.fire({
         title: 'Finalizar Turno',
-        input: 'textarea',
-        inputLabel: 'Comentario y diagnóstico',
-        inputPlaceholder: 'Escribe el diagnóstico aquí...',
-        showCancelButton: true
+        html: `
+          <textarea id="diagnostico" class="swal2-textarea" placeholder="Escribe el diagnóstico aquí..." style="margin-bottom: 10px;"></textarea>
+          <textarea id="resena" class="swal2-textarea" placeholder="Escribe una reseña del turno aquí..."></textarea>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        preConfirm: () => {
+          const diagnostico = (document.getElementById('diagnostico') as HTMLTextAreaElement)?.value;
+          const resena = (document.getElementById('resena') as HTMLTextAreaElement)?.value;
+  
+          if (!diagnostico || !resena) {
+            Swal.showValidationMessage('Ambos campos son obligatorios');
+            return null;
+          }
+  
+          return { diagnostico, resena };
+        }
       });
   
-      if (diagnostico) {
+      if (formValues) {
+        const { diagnostico, resena } = formValues;
         try {
           // Referencia al documento del turno en Firebase
           const turnoRef = doc(this.firestore, 'turnos', turno.id);
-          // Actualizar el estado, el diagnóstico y marcar que tiene reseña
-          await updateDoc(turnoRef, { estado: 'realizado', diagnostico, tieneDiagnostico: true });
+  
+          // Actualizar el estado, el diagnóstico y la reseña
+          await updateDoc(turnoRef, {
+            estado: 'realizado',
+            diagnostico,
+            resenaEspecialista: resena,
+          });
+  
+          // Actualizar en la lista local
           turno.estado = 'realizado';
-          turno.diagnostico = diagnostico; // Actualizar en la lista local también
+          turno.diagnostico = diagnostico;
+          turno.resenaEspecialista = resena;
+  
           Swal.fire('Turno finalizado', 'El turno ha sido finalizado exitosamente.', 'success');
+  
           // Recargar los turnos después de la actualización
           await this.cargarTurnos();
         } catch (error) {

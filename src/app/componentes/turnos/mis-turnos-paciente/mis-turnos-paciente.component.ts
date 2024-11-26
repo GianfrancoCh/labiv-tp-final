@@ -30,8 +30,7 @@ export class MisTurnosPacienteComponent implements OnInit {
     if (this.usuario.tipoUsuario !== 'paciente') {
       return; 
     }
-    await this.cargarTurnos();
-    console.log(this.turnos);
+    await this.cargarTurnos()
   }
 
   async cargarTurnos() {
@@ -44,7 +43,6 @@ export class MisTurnosPacienteComponent implements OnInit {
       if (data.fecha && data.fecha.seconds) {
         data.fecha = new Date(data.fecha.seconds * 1000);
       }
-      console.log(data)
       return new Turno(
         doc.id,
         data.fecha,
@@ -57,7 +55,8 @@ export class MisTurnosPacienteComponent implements OnInit {
         data.resenaPaciente,
         data.resenaEspecialista,
         data.comentario,
-        data.diagnostico
+        data.diagnostico,
+        data.encuesta
       );
     });
   
@@ -98,6 +97,15 @@ export class MisTurnosPacienteComponent implements OnInit {
     Swal.fire({
       title: 'Comentario',
       text: resena ? resena : 'No hay comentarios disponibles.',
+      icon: 'info',
+    });
+  }
+
+  verResena(turno: Turno) {
+    const resena = turno.resenaEspecialista || 'No hay reseña disponibles.';
+    Swal.fire({
+      title: 'Reseña',
+      text: resena ? resena : 'No hay reseña disponibles.',
       icon: 'info',
     });
   }
@@ -169,10 +177,53 @@ export class MisTurnosPacienteComponent implements OnInit {
     }
   }
 
-  completarEncuesta(turno: Turno) {
-    if (turno.estado === 'realizado' && turno.resenaEspecialista != '') {
-      
-      console.log('Completar encuesta del turno:', turno);
+  async completarEncuesta(turno: Turno) {
+    if (turno.estado === 'realizado' && turno.diagnostico !== '' && turno.resenaEspecialista !== '') {
+      const { value: encuesta } = await Swal.fire({
+        title: 'Completar Encuesta',
+        html: `
+          <textarea id="encuesta" class="swal2-textarea" placeholder="Escribe tus comentarios sobre la consulta..."></textarea>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        preConfirm: () => {
+          const encuesta = (document.getElementById('encuesta') as HTMLTextAreaElement)?.value;
+  
+          if (!encuesta) {
+            Swal.showValidationMessage('La encuesta no puede estar vacía');
+            return null;
+          }
+  
+          return encuesta;
+        }
+      });
+  
+      if (encuesta) {
+        try {
+          const turnoRef = doc(this.firestore, 'turnos', turno.id);
+          await updateDoc(turnoRef, {
+            encuesta,
+            encuestaCompletada: true // Marcamos la encuesta como completada
+          });
+  
+          turno.encuesta = encuesta; // Actualizar localmente
+  
+          Swal.fire('Encuesta enviada', 'Gracias por completar la encuesta.', 'success');
+  
+          // Opcional: Recargar turnos si es necesario
+          await this.cargarTurnos();
+        } catch (error) {
+          console.error('Error al completar la encuesta:', error);
+          Swal.fire('Error', 'Hubo un problema al enviar la encuesta.', 'error');
+        }
+      }
+    } else {
+      Swal.fire({
+        title: 'Acción no permitida',
+        text: 'El turno no cumple con los requisitos para completar la encuesta.',
+        icon: 'warning',
+        confirmButtonText: 'Cerrar'
+      });
     }
   }
 
