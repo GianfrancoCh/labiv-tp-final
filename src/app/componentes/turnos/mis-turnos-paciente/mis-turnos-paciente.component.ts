@@ -31,6 +31,7 @@ export class MisTurnosPacienteComponent implements OnInit {
       return; 
     }
     await this.cargarTurnos();
+    console.log(this.turnos);
   }
 
   async cargarTurnos() {
@@ -43,13 +44,20 @@ export class MisTurnosPacienteComponent implements OnInit {
       if (data.fecha && data.fecha.seconds) {
         data.fecha = new Date(data.fecha.seconds * 1000);
       }
+      console.log(data)
       return new Turno(
         doc.id,
         data.fecha,
         data.estado,
         data.especialidad,
         data.paciente,
-        data.especialista
+        data.especialista,
+        data.pacienteNombre,
+        data.especialistaNombre,
+        data.resenaPaciente,
+        data.resenaEspecialista,
+        data.comentario,
+        data.diagnostico
       );
     });
   
@@ -85,21 +93,29 @@ export class MisTurnosPacienteComponent implements OnInit {
       );
     });
   }
+  verComentario(turno: Turno) {
+    const resena = turno.comentario || 'No hay comentarios disponibles.';
+    Swal.fire({
+      title: 'Comentario',
+      text: resena ? resena : 'No hay comentarios disponibles.',
+      icon: 'info',
+    });
+  }
 
   async cancelarTurno(turno: Turno) {
     const { value: comentario } = await Swal.fire({
       title: 'Cancelar Turno',
       input: 'textarea',
       inputLabel: 'Comentario',
-      inputPlaceholder: 'Escribe el motivo de la cancelación...',
+      inputPlaceholder: 'Escribe el motivo de la cancelacion...',
       showCancelButton: true
     });
   
     if (comentario) {
       try {
- 
+        const motivoCancelacion = `Motivo cancelacion: ${comentario}`;
         const turnoRef = doc(this.firestore, 'turnos', turno.id);
-        await updateDoc(turnoRef, { estado: 'cancelado', comentario });
+        await updateDoc(turnoRef, { estado: 'cancelado', comentario: motivoCancelacion });
         Swal.fire('Turno cancelado', 'El turno ha sido cancelado exitosamente.', 'success');
         await this.cargarTurnos();
       } catch (error) {
@@ -154,7 +170,7 @@ export class MisTurnosPacienteComponent implements OnInit {
   }
 
   completarEncuesta(turno: Turno) {
-    if (turno.estado === 'realizado' && turno.tieneResena) {
+    if (turno.estado === 'realizado' && turno.resenaEspecialista != '') {
       
       console.log('Completar encuesta del turno:', turno);
     }
@@ -177,7 +193,7 @@ export class MisTurnosPacienteComponent implements OnInit {
           const turnoRef = doc(this.firestore, 'turnos', turno.id);
           
           await updateDoc(turnoRef, { resena });
-          turno.resena = resena; 
+          turno.resenaPaciente = resena; 
           Swal.fire('Reseña guardada', 'Tu reseña ha sido guardada exitosamente.', 'success');
           
           await this.cargarTurnos();

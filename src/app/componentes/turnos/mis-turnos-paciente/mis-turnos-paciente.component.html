@@ -26,20 +26,42 @@
       }">{{ turno.estado | uppercase }}</span></p>
 
       <!-- Acciones -->
-      <div *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado'">
-        <button class="btn btn-danger" (click)="cancelarTurno(turno)">Cancelar Turno</button>
-      </div>
-
-      <div *ngIf="turno.diagnostico !== ''">
-        <button class="btn btn-primary" (click)="verDiagnostico(turno)">Ver Diagnostico</button>
-      </div>
-
-      <div *ngIf="turno.estado === 'realizado' && turno.tieneDiagnostico">
-        <button class="btn btn-success" (click)="completarEncuesta(turno)">Completar Encuesta</button>
-      </div>
-
-      <div *ngIf="turno.estado === 'realizado'">
-        <button class="btn btn-info" (click)="calificarAtencion(turno)">Calificar Atención</button>
+      <div class="actions-container"> 
+        <button
+          *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado'"
+          class="btn btn-danger"
+          (click)="cancelarTurno(turno)"
+        >
+          Cancelar Turno
+        </button>
+        <button
+          *ngIf="turno.diagnostico !== ''"
+          class="btn btn-primary"
+          (click)="verDiagnostico(turno)"
+        >
+          Ver Diagnóstico
+        </button>
+        <button
+          *ngIf="turno.estado === 'realizado' && turno.diagnostico != ''"
+          class="btn btn-success"
+          (click)="completarEncuesta(turno)"
+        >
+          Completar Encuesta
+        </button>
+        <button
+          *ngIf="turno.estado === 'realizado'"
+          class="btn btn-info"
+          (click)="calificarAtencion(turno)"
+        >
+          Calificar Atención
+        </button>
+        <button
+          *ngIf="turno.comentario && turno.comentario.trim() !== ''"
+          class="btn btn-warning"
+          (click)="verComentario(turno)"
+        >
+          Ver Reseña/Comentario
+        </button>
       </div>
     </div>
 

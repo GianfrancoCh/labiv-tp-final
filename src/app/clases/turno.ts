@@ -7,13 +7,11 @@ export class Turno {
   especialista: string; // ID del especialista
   pacienteNombre?: string; // Nombre del paciente
   especialistaNombre?: string; // Nombre del especialista
-  tieneResena?: boolean;
-  tieneDiagnostico?: boolean;
-  resena?: string;
-  calificacion?: string;
-  motivoCancelacion?: string;
-  motivoRechazo?: string;
-  diagnostico?: string;
+  resenaPaciente: string;
+  resenaEspecialista: string;
+  encuestaPaciente?: string;
+  comentario: string = '';
+  diagnostico: string;
 
   constructor(
     id: string,
@@ -24,13 +22,10 @@ export class Turno {
     especialista: string,
     pacienteNombre?: string,
     especialistaNombre?: string,
-    tieneResena?: boolean,
-    tieneDiagnostico?: boolean,
-    resena?: string,
-    calificacion?: string,
-    motivoCancelacion?: string,
-    motivoRechazo?: string,
-    diagnostico?: string
+    resenaPaciente: string = '',
+    resenaEspecialista: string = '',
+    comentario: string = '',
+    diagnostico: string = ''
   ) {
     this.id = id;
     this.fecha = fecha;
@@ -40,12 +35,9 @@ export class Turno {
     this.especialista = especialista;
     this.pacienteNombre = pacienteNombre;
     this.especialistaNombre = especialistaNombre;
-    this.tieneResena = tieneResena;
-    this.tieneDiagnostico = tieneDiagnostico;
-    this.resena = resena;
-    this.calificacion = calificacion;
-    this.motivoCancelacion = motivoCancelacion;
-    this.motivoRechazo = motivoRechazo;
+    this.resenaPaciente = resenaPaciente;
+    this.resenaEspecialista = resenaEspecialista;
+    this.comentario = comentario;
     this.diagnostico = diagnostico;
   }
 }

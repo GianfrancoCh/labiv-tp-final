@@ -151,3 +151,16 @@ h2 {
   font-size: 0.9rem;
   margin-top: 20px;
 }
+
+
+.actions-container {
+  display: flex; /* Alinea los botones en fila horizontal */
+  gap: 10px; /* Espaciado uniforme entre botones */
+  margin-top: 10px; /* Espaciado superior para separar del contenido */
+}
+
+.actions-container .btn {
+  padding: 8px 12px; /* Tamaño del botón */
+  text-align: center; /* Centra el texto en los botones */
+  min-width: 100px; /* Asegura un ancho mínimo para uniformidad */
+}

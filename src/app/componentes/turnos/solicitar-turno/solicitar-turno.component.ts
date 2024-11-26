@@ -9,6 +9,7 @@ import { Turno } from '../../../clases/turno';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Especialidad } from '../../../clases/especialidad';
+import Swal from 'sweetalert2';
 
 moment.locale('es'); // Configura Moment.js para usar el español
 
@@ -208,7 +209,11 @@ export class SolicitarTurnoComponent implements OnInit {
   async confirmarTurno() {
     const pacienteUID = this.tipoUsuario === 'administrador' ? this.pacienteSeleccionado?.uid : this.usuario?.uid;
     if (!this.especialistaSeleccionado || !this.especialidadSeleccionada || !this.diaSeleccionado || !this.horarioSeleccionado || !pacienteUID) {
-      console.error('Faltan datos para confirmar el turno');
+      Swal.fire({
+        icon: 'error',
+        title: 'Faltan datos',
+        text: 'Por favor, complete todos los campos para confirmar el turno.',
+      });
       return;
     }
     
@@ -220,7 +225,11 @@ export class SolicitarTurnoComponent implements OnInit {
         estado: 'pendiente',
         especialidad: this.especialidadSeleccionada,
         paciente: pacienteUID,
-        especialista: this.especialistaSeleccionado.uid
+        especialista: this.especialistaSeleccionado.uid,
+        resenaEspecialista: '',
+        resenaPaciente: '',
+        diagnostico: '',
+        comentario: ''
       };
 
       const nuevoTurnoDoc = await addDoc(turnosRef, turnoData);
@@ -228,6 +237,11 @@ export class SolicitarTurnoComponent implements OnInit {
       this.router.navigate(['/mis-turnos-paciente']);  
       
     } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al confirmar el turno. Inténtelo de nuevo.',
+      });
       console.error('Error al confirmar el turno:', error);
     }
   }

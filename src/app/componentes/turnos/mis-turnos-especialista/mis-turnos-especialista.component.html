@@ -26,20 +26,42 @@
       }">{{ turno.estado | uppercase }}</span></p>
 
       <!-- Acciones -->
-      <div *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'rechazado' && turno.estado !== 'cancelado'">
-        <button class="btn btn-danger" (click)="cancelarTurno(turno)">Cancelar Turno</button>
-      </div>
-      <div *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado'">
-        <button class="btn btn-warning" (click)="rechazarTurno(turno)">Rechazar Turno</button>
-      </div>
-      <div *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado' && turno.estado !== 'aceptado'">
-        <button class="btn btn-success" (click)="aceptarTurno(turno)">Aceptar Turno</button>
-      </div>
-      <div *ngIf="turno.estado === 'aceptado'">
-        <button class="btn btn-primary" (click)="finalizarTurno(turno)">Finalizar Turno</button>
-      </div>
-      <div *ngIf="turno.resena!=''">
-        <button class="btn btn-info" (click)="verResena(turno)">Ver Reseña</button>
+      <div class="actions-container">
+        <button
+          *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'rechazado' && turno.estado !== 'cancelado'"
+          class="btn btn-danger"
+          (click)="cancelarTurno(turno)"
+        >
+          Cancelar Turno
+        </button>
+        <button
+          *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado'"
+          class="btn btn-warning"
+          (click)="rechazarTurno(turno)"
+        >
+          Rechazar Turno
+        </button>
+        <button
+          *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado' && turno.estado !== 'aceptado'"
+          class="btn btn-success"
+          (click)="aceptarTurno(turno)"
+        >
+          Aceptar Turno
+        </button>
+        <button
+          *ngIf="turno.estado === 'aceptado'"
+          class="btn btn-primary"
+          (click)="finalizarTurno(turno)"
+        >
+          Finalizar Turno
+        </button>
+        <button
+          *ngIf="turno.comentario !== ''"
+          class="btn btn-info"
+          (click)="verComentario(turno)"
+        >
+        Ver Reseña/Comentario
+        </button>
       </div>
     </div>
 

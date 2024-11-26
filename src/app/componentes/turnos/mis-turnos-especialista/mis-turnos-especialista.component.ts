@@ -42,7 +42,20 @@ export class MisTurnosEspecialistaComponent implements OnInit {
       if (data.fecha && data.fecha.seconds) {
         data.fecha = new Date(data.fecha.seconds * 1000);
       }
-      return new Turno(doc.id, data.fecha, data.estado, data.especialidad, data.paciente, data.especialista);
+      return new Turno(
+        doc.id,
+        data.fecha,
+        data.estado,
+        data.especialidad,
+        data.paciente,
+        data.especialista,
+        data.pacienteNombre,
+        data.especialistaNombre,
+        data.resenaPaciente,
+        data.resenaEspecialista,
+        data.comentario,
+        data.diagnostico
+      );
     });
 
     // Obtener los nombres de los pacientes
@@ -78,40 +91,13 @@ export class MisTurnosEspecialistaComponent implements OnInit {
     });
   }
 
-  async verResena(turno: Turno) {
-    try {
-      // Referencia al documento del turno en Firebase
-      const turnoRef = doc(this.firestore, 'turnos', turno.id);
-      const turnoSnapshot = await getDoc(turnoRef);
-  
-      if (turnoSnapshot.exists()) {
-        const data = turnoSnapshot.data();
-        const resena = data['resena'] || 'No hay reseña disponible.';
-  
-        // Mostrar la reseña usando Swal
-        Swal.fire({
-          title: 'Reseña del Turno',
-          text: resena,
-          icon: 'info',
-          confirmButtonText: 'Cerrar'
-        });
-      } else {
-        Swal.fire({
-          title: 'Reseña no disponible',
-          text: 'No se encontró información del turno.',
-          icon: 'warning',
-          confirmButtonText: 'Cerrar'
-        });
-      }
-    } catch (error) {
-      console.error('Error al obtener la reseña:', error);
-      Swal.fire({
-        title: 'Error',
-        text: 'Hubo un problema al obtener la reseña del turno.',
-        icon: 'error',
-        confirmButtonText: 'Cerrar'
-      });
-    }
+  verComentario(turno: Turno) {
+    const resena = turno.comentario || 'No hay comentarios disponibles.';
+    Swal.fire({
+      title: 'Comentario',
+      text: resena ? resena : 'No hay comentarios disponibles.',
+      icon: 'info',
+    });
   }
 
   cancelarTurno(turno: Turno) {
@@ -119,7 +105,7 @@ export class MisTurnosEspecialistaComponent implements OnInit {
       Swal.fire({
         title: 'Cancelar Turno',
         input: 'textarea',
-        inputLabel: 'Motivo de la cancelación',
+        inputLabel: 'Motivo de la cancelacion',
         showCancelButton: true
       }).then(async result => {
         if (result.isConfirmed && result.value) {
@@ -140,21 +126,29 @@ export class MisTurnosEspecialistaComponent implements OnInit {
     }
   }
 
-  rechazarTurno(turno: Turno) {
-    if (turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'cancelado') {
-      Swal.fire({
-        title: 'Rechazar Turno',
-        input: 'textarea',
-        inputLabel: 'Motivo del rechazo',
-        showCancelButton: true
-      }).then(result => {
-        if (result.isConfirmed && result.value) {
-          turno.estado = 'rechazado';
-          turno.motivoRechazo = result.value;
-          Swal.fire('Turno rechazado', 'El turno ha sido rechazado exitosamente.', 'success');
-        }
-      });
+ async rechazarTurno(turno: Turno) {
+    const { value: comentario } = await Swal.fire({
+      title: 'Rechazar Turno',
+      input: 'textarea',
+      inputLabel: 'Comentario',
+      inputPlaceholder: 'Escribe el motivo del rechazo...',
+      showCancelButton: true
+    });
+
+    if (comentario) {
+      try {
+        const motivoRechazo = `Motivo rechazo: ${comentario}`;
+        const turnoRef = doc(this.firestore, 'turnos', turno.id);
+        await updateDoc(turnoRef, { estado: 'cancelado', comentario: motivoRechazo });
+        Swal.fire('Turno cancelado', 'El turno ha sido rechazado exitosamente.', 'success');
+        await this.cargarTurnos();
+      } catch (error) {
+        console.error('Error al rechazar el turno:', error);
+        Swal.fire('Error', 'Hubo un problema al rechazar el turno.', 'error');
+      }
     }
+
+
   }
 
   async aceptarTurno(turno: Turno) {
@@ -192,8 +186,7 @@ export class MisTurnosEspecialistaComponent implements OnInit {
           // Actualizar el estado, el diagnóstico y marcar que tiene reseña
           await updateDoc(turnoRef, { estado: 'realizado', diagnostico, tieneDiagnostico: true });
           turno.estado = 'realizado';
-          turno.diagnostico = diagnostico;
-          turno.tieneDiagnostico = true; // Actualizar en la lista local también
+          turno.diagnostico = diagnostico; // Actualizar en la lista local también
           Swal.fire('Turno finalizado', 'El turno ha sido finalizado exitosamente.', 'success');
           // Recargar los turnos después de la actualización
           await this.cargarTurnos();

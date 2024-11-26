@@ -157,3 +157,14 @@
     margin-top: 20px;
   }
   
+  .actions-container {
+    display: flex; /* Coloca los botones en fila */
+    gap: 15px; /* Espaciado uniforme entre los botones */
+    margin-top: 10px; /* Espaciado superior para separar del contenido superior */
+  }
+  
+  .actions-container .btn {
+    min-width: 100px; /* Asegura un ancho mínimo para los botones */
+    padding: 10px 15px; /* Mejora el tamaño del botón */
+    text-align: center; /* Centra el texto del botón */
+  }
