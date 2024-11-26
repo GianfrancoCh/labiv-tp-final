@@ -176,3 +176,15 @@ button[type="submit"]:hover {
   object-fit: cover; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+.btn-descargar-excel{
+  padding: 12px 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  background-color: #34568b;
+  color: white;
+}

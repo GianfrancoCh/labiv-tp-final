@@ -3,16 +3,23 @@ export class Turno {
   fecha: Date;
   estado: 'pendiente' | 'aceptado' | 'realizado' | 'cancelado' | 'rechazado';
   especialidad: string;
-  paciente: string; // ID del paciente
-  especialista: string; // ID del especialista
-  pacienteNombre?: string; // Nombre del paciente
-  especialistaNombre?: string; // Nombre del especialista
+  paciente: string; 
+  especialista: string; 
+  pacienteNombre?: string; 
+  especialistaNombre?: string; 
   resenaPaciente: string;
   resenaEspecialista: string;
   encuestaPaciente?: string;
   comentario: string = '';
-  diagnostico: string;
-  encuesta: string = '';
+  diagnostico: string = '';
+  historiaClinica: {
+    altura: number;
+    peso: number;
+    temperatura: number;
+    presion: string;
+    datosDinamicos: { clave: string; valor: string }[];
+  }[];
+  encuesta: { pregunta: string; respuesta: string }[];
 
   constructor(
     id: string,
@@ -27,7 +34,14 @@ export class Turno {
     resenaEspecialista: string = '',
     comentario: string = '',
     diagnostico: string = '',
-    encuesta: string = ''
+    historiaClinica: {
+      altura: number;
+      peso: number;
+      temperatura: number;
+      presion: string;
+      datosDinamicos: { clave: string; valor: string }[];
+    }[] = [],
+    encuesta: { pregunta: string; respuesta: string }[] = []
   ) {
     this.id = id;
     this.fecha = fecha;
@@ -40,6 +54,7 @@ export class Turno {
     this.resenaPaciente = resenaPaciente;
     this.resenaEspecialista = resenaEspecialista;
     this.comentario = comentario;
+    this.historiaClinica = historiaClinica;
     this.diagnostico = diagnostico;
     this.encuesta = encuesta;
   }

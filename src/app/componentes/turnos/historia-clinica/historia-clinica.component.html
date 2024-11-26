@@ -1,0 +1,46 @@
+<div class="historia-clinica-container">
+  <h3 class="historia-clinica-titulo">Historia Clínica</h3>
+  <table class="historia-clinica-tabla" *ngIf="historial.length > 0">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Especialidad</th>
+        <th>Especialista</th>
+        <th>Diagnóstico</th>
+        <th>Reseña</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let turno of historial">
+        <td>{{ turno.fecha }}</td>
+        <td>{{ turno.especialidad }}</td>
+        <td>{{ turno.especialistaNombre }}</td>
+        <td>
+          <span *ngIf="turno.historiaClinica?.length > 0">
+            Diagnóstico: <span class="diagnostico">{{ turno.diagnostico || 'Sin diagnóstico general' }}</span>, 
+            {{ turno.historiaClinica[0]?.altura }} cm, 
+            {{ turno.historiaClinica[0]?.peso }} kg, 
+            {{ turno.historiaClinica[0]?.temperatura }} °C, 
+            Presión: {{ turno.historiaClinica[0]?.presion }},
+            Otros: 
+            <span *ngIf="turno.historiaClinica[0]?.datosDinamicos?.length > 0">
+              <ul>
+                <li *ngFor="let dato of turno.historiaClinica[0]?.datosDinamicos" class="datos-dinamicos">
+                  {{ dato.clave }}: {{ dato.valor }};
+                </li>
+              </ul>
+            </span>
+            <span *ngIf="!turno.historiaClinica[0]?.datosDinamicos?.length">
+              Sin datos dinámicos
+            </span>
+          </span>
+          <span *ngIf="!turno.historiaClinica?.length">Sin datos</span>
+        </td>
+        <td>{{ turno.resenaEspecialista || 'Sin reseña' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="sin-historial" *ngIf="historial.length === 0">
+    <p>No hay datos de historia clínica disponibles.</p>
+  </div>
+</div>

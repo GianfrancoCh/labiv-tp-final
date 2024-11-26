@@ -55,6 +55,7 @@ export class MisTurnosEspecialistaComponent implements OnInit {
         data.resenaEspecialista,
         data.comentario,
         data.diagnostico,
+        data.historiaClinica,
         data.encuesta
       );
     });
@@ -175,45 +176,73 @@ export class MisTurnosEspecialistaComponent implements OnInit {
       const { value: formValues } = await Swal.fire({
         title: 'Finalizar Turno',
         html: `
-          <textarea id="diagnostico" class="swal2-textarea" placeholder="Escribe el diagnóstico aquí..." style="margin-bottom: 10px;"></textarea>
-          <textarea id="resena" class="swal2-textarea" placeholder="Escribe una reseña del turno aquí..."></textarea>
+          <label>Altura (cm):</label>
+          <input id="altura" type="number" class="swal2-input" placeholder="Altura en cm" required>
+          <label>Peso (kg):</label>
+          <input id="peso" type="number" class="swal2-input" placeholder="Peso en kg" required>
+          <label>Temperatura (°C):</label>
+          <input id="temperatura" type="number" class="swal2-input" placeholder="Temperatura en °C" required>
+          <label>Presión (mmHg):</label>
+          <input id="presion" type="text" class="swal2-input" placeholder="Presión arterial (ej. 120/80)" required>
+          <label>Dato dinámico (clave 1):</label>
+          <input id="clave1" type="text" class="swal2-input" placeholder="Clave (ej. caries)">
+          <label>Dato dinámico (valor 1):</label>
+          <input id="valor1" type="text" class="swal2-input" placeholder="Valor (ej. 3)">
+          <textarea id="diagnostico" class="swal2-textarea" placeholder="Escribe el diagnóstico aquí..." required></textarea>
+          <textarea id="resena" class="swal2-textarea" placeholder="Escribe la reseña del turno aquí..." required></textarea>
         `,
         focusConfirm: false,
         showCancelButton: true,
         preConfirm: () => {
+          const altura = (document.getElementById('altura') as HTMLInputElement)?.value;
+          const peso = (document.getElementById('peso') as HTMLInputElement)?.value;
+          const temperatura = (document.getElementById('temperatura') as HTMLInputElement)?.value;
+          const presion = (document.getElementById('presion') as HTMLInputElement)?.value;
           const diagnostico = (document.getElementById('diagnostico') as HTMLTextAreaElement)?.value;
-          const resena = (document.getElementById('resena') as HTMLTextAreaElement)?.value;
+          const resenaEspecialista = (document.getElementById('resena') as HTMLTextAreaElement)?.value;
   
-          if (!diagnostico || !resena) {
-            Swal.showValidationMessage('Ambos campos son obligatorios');
+          const clave1 = (document.getElementById('clave1') as HTMLInputElement)?.value;
+          const valor1 = (document.getElementById('valor1') as HTMLInputElement)?.value;
+  
+          if (!altura || !peso || !temperatura || !presion || !diagnostico || !resenaEspecialista) {
+            Swal.showValidationMessage('Todos los campos son obligatorios');
             return null;
           }
   
-          return { diagnostico, resena };
-        }
+          return {
+            historiaClinica: [
+              {
+                altura: Number(altura),
+                peso: Number(peso),
+                temperatura: Number(temperatura),
+                presion,
+                datosDinamicos: clave1 && valor1 ? [{ clave: clave1, valor: valor1 }] : [],
+              },
+            ],
+            diagnostico,
+            resenaEspecialista,
+          };
+        },
       });
   
       if (formValues) {
-        const { diagnostico, resena } = formValues;
-        try {
-          // Referencia al documento del turno en Firebase
-          const turnoRef = doc(this.firestore, 'turnos', turno.id);
+        const { historiaClinica, diagnostico, resenaEspecialista } = formValues;
   
-          // Actualizar el estado, el diagnóstico y la reseña
+        try {
+          const turnoRef = doc(this.firestore, 'turnos', turno.id);
           await updateDoc(turnoRef, {
             estado: 'realizado',
+            historiaClinica,
             diagnostico,
-            resenaEspecialista: resena,
+            resenaEspecialista,
           });
   
-          // Actualizar en la lista local
           turno.estado = 'realizado';
+          turno.historiaClinica = historiaClinica;
           turno.diagnostico = diagnostico;
-          turno.resenaEspecialista = resena;
+          turno.resenaEspecialista = resenaEspecialista;
   
           Swal.fire('Turno finalizado', 'El turno ha sido finalizado exitosamente.', 'success');
-  
-          // Recargar los turnos después de la actualización
           await this.cargarTurnos();
         } catch (error) {
           console.error('Error al finalizar el turno:', error);

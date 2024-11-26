@@ -2,49 +2,55 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #7e98f4, #ebb3b3);
-  padding: 20px; /* Añade un poco de espacio alrededor para evitar que se salga de la pantalla */
+  padding: 20px;
 }
 
 .perfil-container {
   display: flex;
   flex-direction: row;
-  gap: 20px; /* Espacio entre los elementos */
-  max-width: 1000px; /* Limitar el ancho total */
-  width: 100%; /* Usar todo el espacio disponible */
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-  overflow: hidden; /* Evita que el contenido se desborde */
+  gap: 30px; 
+  max-width: 1400px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px; 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  font-family: 'Roboto', Arial, sans-serif;
 }
+
 
 .info-basica {
   flex: 1;
-  padding: 20px;
+  padding: 25px;
+  background-color: #f7f7f7; 
+  border-right: 2px solid #e0e0e0; 
 }
 
-.perfil-container h2 {
+.info-basica h2 {
   text-align: center;
-  color: #333;
+  color: #444;
   margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
 }
 
-.perfil-container p {
-  margin: 10px 0;
+.info-basica p {
+  margin: 12px 0;
   font-size: 16px;
+  line-height: 1.5;
   color: #555;
 }
 
-.perfil-container strong {
+.info-basica strong {
   color: #333;
+  font-weight: 600;
 }
 
 .imagenes-container {
   display: flex;
   justify-content: center;
-  gap: 20px;
   margin-top: 20px;
 }
 
@@ -53,28 +59,68 @@
   height: 150px;
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid #ddd;
-  transition: transform 0.3s;
+  border: 3px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .imagenes-container img:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilo para el componente MisHorarios */
+/* Historia clínica */
+.historia-clinica {
+  flex: 2;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+}
+
+/* Mis Horarios */
 .mis-horarios-container {
   flex: 2;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Ajustes para pantallas más pequeñas */
+.btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; 
+}
+
+
+.btn-historia-clinica {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  background-color: #34568b;
+  color: white;
+}
+
+.btn-historia-clinica:hover {
+  background-color: #274b72; 
+  transform: scale(1.05); 
+}
+
 @media (max-width: 768px) {
   .perfil-container {
-    flex-direction: column; /* Cambia a una columna en pantallas más pequeñas */
+    flex-direction: column;
     max-width: 100%;
+  }
+
+  .info-basica {
+    border-right: none; /* Quitar separador */
+    border-bottom: 2px solid #e0e0e0; /* Separador horizontal */
   }
 
   .imagenes-container img {

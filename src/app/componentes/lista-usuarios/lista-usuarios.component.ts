@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import { Usuario } from '../../clases/usuario'; // Importa la interfaz de Usuario
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-clinica.component';
 
 interface Especialidad {
   id: string;
@@ -16,7 +18,7 @@ interface Especialidad {
   standalone: true,
   templateUrl: './lista-usuarios.component.html',
   styleUrls: ['./lista-usuarios.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent]
 })
 export class ListaUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
@@ -25,6 +27,7 @@ export class ListaUsuariosComponent implements OnInit {
   imagenSeleccionada: File | null = null;
   tipoUsuario: 'paciente' | 'especialista' | 'administrador' = 'paciente';
   especialidades: Especialidad[] = [];
+  pacienteSeleccionado: Usuario | null = null;
 
   constructor(private firestore: Firestore, private authService: AuthService, private fb: FormBuilder) {}
 
@@ -46,6 +49,10 @@ export class ListaUsuariosComponent implements OnInit {
       console.error('Error al obtener el perfil del usuario:', error);
       Swal.fire('Error', 'No se pudo verificar el perfil del usuario.', 'error');
     }
+  }
+  mostrarHistoriaClinica(usuario: Usuario): void {
+    console.log(`Mostrando historia clínica del paciente: ${usuario.id}`);
+    this.pacienteSeleccionado = this.pacienteSeleccionado?.id === usuario.id ? null : usuario;
   }
 
   async cargarEspecialidades() {
@@ -162,5 +169,31 @@ export class ListaUsuariosComponent implements OnInit {
       Swal.fire('Inhabilitado', 'El usuario especialista ha sido inhabilitado.', 'warning');
       this.cargarUsuarios();
     });
+  }
+
+  exportarUsuariosExcel() {
+    if (!this.isAdmin) {
+      Swal.fire('Acceso denegado', 'Solo los Administradores pueden exportar datos.', 'error');
+      return;
+    }
+
+    // Define los datos que deseas incluir en el Excel
+    const datosUsuarios = this.usuarios.map(usuario => ({
+      Nombre: usuario.nombre,
+      Apellido: usuario.apellido,
+      Email: usuario.email,
+      Tipo: usuario.tipoUsuario,
+      ID: usuario.id
+    }));
+
+    // Crea una hoja de trabajo
+    const hoja = XLSX.utils.json_to_sheet(datosUsuarios);
+
+    // Crea un libro de trabajo y agrega la hoja
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, 'Usuarios');
+
+    // Genera el archivo Excel y lo descarga
+    XLSX.writeFile(libro, 'lista-usuarios.xlsx');
   }
 }

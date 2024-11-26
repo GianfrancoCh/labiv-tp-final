@@ -14,8 +14,19 @@
         <img *ngIf="usuario.imgUrl1" [src]="usuario.imgUrl1" alt="Imagen de perfil" class="imagen-perfil">
       </div>
     </div>
+
+    <div *ngIf="usuario?.tipoUsuario === 'paciente' && historial.length > 0" class="btn-container">
+      <button class="btn-historia-clinica" (click)="generarHistoriaClinicaPDF()">
+        Descargar Historia Clínica
+      </button>
+    </div>
+  </div>
+  <!-- Historia Clínica -->
+  <div class="historia-clinica" *ngIf="usuario.tipoUsuario === 'paciente'">
+    <app-historia-clinica [pacienteId]="usuario.uid"></app-historia-clinica>
   </div>
 
+  
   <!-- Mostrar el componente MisHorarios -->
   <div class="mis-horarios-container" *ngIf="usuario.tipoUsuario === 'especialista'">
     <app-mis-horarios [usuario]="usuario"></app-mis-horarios>

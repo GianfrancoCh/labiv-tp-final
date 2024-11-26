@@ -35,14 +35,14 @@
           Cancelar Turno
         </button>
         <button
-          *ngIf="turno.diagnostico !== ''"
+          *ngIf="turno.diagnostico.length > 0"
           class="btn btn-primary"
           (click)="verDiagnostico(turno)"
         >
           Ver Diagnóstico
         </button>
         <button
-          *ngIf="turno.estado === 'realizado' && turno.diagnostico != ''"
+          *ngIf="turno.estado === 'realizado' && turno.diagnostico.length > 0"
           class="btn btn-success"
           (click)="completarEncuesta(turno)"
         >
