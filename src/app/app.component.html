@@ -22,6 +22,9 @@
     <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
       <a routerLink="/turnos" routerLinkActive="active">Gestionar Turnos</a>
     </li>
+    <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
+      <a routerLink="/estadisticas" routerLinkActive="active">Estadisticas</a>
+    </li>
 
     <!-- Mostrar elementos solo para especialistas -->
     <li *ngIf="isLoggedIn && tipoUsuario === 'especialista'">

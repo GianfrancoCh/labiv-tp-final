@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Inject } from '@angular/core';
 import { Firestore, collection, query, where, getDocs,doc, getDoc } from '@angular/fire/firestore';
 import { Turno } from '../../../clases/turno';
+
 
 @Component({
   selector: 'app-historia-clinica',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './historia-clinica.component.html',
-  styleUrl: './historia-clinica.component.css'
+  styleUrl: './historia-clinica.component.css',
 })
 export class HistoriaClinicaComponent implements OnInit {
   @Input() pacienteId!: string; // ID del paciente

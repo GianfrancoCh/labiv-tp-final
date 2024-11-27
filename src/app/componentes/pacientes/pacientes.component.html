@@ -1,38 +1,41 @@
-<h1>ESTA EN PROCESO</h1>
 <div *ngIf="pacientes.length > 0; else noPacientes">
-    <h2 class="text-center">Pacientes Atendidos</h2>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Edad</th>
-          <th>DNI</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let paciente of pacientes">
-          <td>
-            <img
-              [src]="paciente.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'"
-              alt="Imagen de {{ paciente.nombre }}"
-              class="img-thumbnail"
-              style="width: 50px; height: 50px; object-fit: cover;"
-            />
-          </td>
-          <td>{{ paciente.nombre }}</td>
-          <td>{{ paciente.apellido }}</td>
-          <td>{{ paciente.edad }}</td>
-          <td>{{ paciente.dni }}</td>
-          <td>{{ paciente.email }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <h2 class="text-center">Pacientes Atendidos</h2>
+  <div class="card-container">
+    <div class="card" *ngFor="let paciente of pacientes">
+      <img
+        [src]="paciente.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'"
+        alt="Imagen de {{ paciente.nombre }} {{ paciente.apellido }}"
+        class="card-img"
+      />
+      <div class="card-body">
+        <h4>{{ paciente.nombre }} {{ paciente.apellido }}</h4>
+        <p>Edad: {{ paciente.edad }}</p>
+        <p>DNI: {{ paciente.dni }}</p>
+        <p>Email: {{ paciente.email }}</p>
+        <h5>Últimos Turnos:</h5>
+        <ul>
+          <li *ngFor="let turno of paciente.ultimosTurnos">
+            {{ turno.fecha | date: 'dd/MM/yyyy HH:mm' }}
+          </li>
+        </ul>
+        <button
+          class="btn btn-primary"
+          (click)="mostrarHistoriaClinica(paciente)"
+        >
+          {{ pacienteSeleccionado?.id === paciente.id ? 'Ocultar' : 'Ver' }} Historia Clínica
+        </button>
+      </div>
+      <!-- Historia clínica adaptada -->
+      <div *ngIf="pacienteSeleccionado?.id === paciente.id" class="historia-clinica">
+        <app-historia-clinica
+          *ngIf="pacienteSeleccionado"
+          [pacienteId]="pacienteSeleccionado.id"
+          [isAdmin]="true"
+        ></app-historia-clinica>
+      </div>
+    </div>
   </div>
-  
-  <ng-template #noPacientes>
-    <p class="text-center">No hay pacientes atendidos registrados para este especialista.</p>
-  </ng-template>
-  
+</div>
+<ng-template #noPacientes>
+  <p class="text-center">No hay pacientes atendidos registrados para este especialista.</p>
+</ng-template>

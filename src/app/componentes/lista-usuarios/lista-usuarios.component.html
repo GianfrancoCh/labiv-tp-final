@@ -1,49 +1,38 @@
 <div *ngIf="isAdmin; else noAccess">
   <h2>Gestión de Usuarios</h2>
+  <!-- Historia Clínica fuera de las cards -->
+  <div class="historia-clinica-container" *ngIf="pacienteSeleccionado">
+    <h3>Historia Clínica de {{ pacienteSeleccionado.nombre }} {{ pacienteSeleccionado.apellido }}</h3>
+    <app-historia-clinica
+      [pacienteId]="pacienteSeleccionado.id"
+      [isAdmin]="true"
+    ></app-historia-clinica>
+  </div>
 
-  <button class="btn-descargar-excel" (click)="exportarUsuariosExcel()">Exportar Usuarios a Excel</button>
-  <!-- Tabla de Usuarios -->
-  <table class="user-table">
-    <thead>
-      <tr>
-        <th>Imagen</th> <!-- Nueva columna -->
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Email</th>
-        <th>Tipo de Usuario</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody *ngFor="let usuario of usuarios">
-      <!-- Iteración de usuarios -->
-      <tr>
-        <td>
-          <img [src]="usuario.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'" alt="Imagen de {{ usuario.nombre }}" class="user-img">
-        </td>
-        <td>{{ usuario.nombre }}</td>
-        <td>{{ usuario.apellido }}</td>
-        <td>{{ usuario.email }}</td>
-        <td>{{ usuario.tipoUsuario }}</td>
-        <td>
-          <button *ngIf="usuario.tipoUsuario === 'especialista' && !usuario.aprobado" (click)="habilitarEspecialista(usuario)">
-            Habilitar
-          </button>
-          <button *ngIf="usuario.tipoUsuario === 'especialista' && usuario.aprobado" (click)="inhabilitarEspecialista(usuario)">
-            Inhabilitar
-          </button>
+  <div class="card-container">
+    <!-- Card para cada usuario -->
+    <div class="card" *ngFor="let usuario of usuarios">
+      <!-- Imagen del usuario -->
+      <img
+        [src]="usuario.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'"
+        alt="Imagen de {{ usuario.nombre }}"
+        class="card-img"
+      />
+      <div class="card-body">
+        <h4>{{ usuario.nombre }} {{ usuario.apellido }}</h4>
+        <p>Email: {{ usuario.email }}</p>
+        <p>Tipo de Usuario: {{ usuario.tipoUsuario }}</p>
+
+        <!-- Botones condicionales -->
+        <div class="card-actions">
           <button *ngIf="usuario.tipoUsuario === 'paciente'" (click)="mostrarHistoriaClinica(usuario)">
             {{ pacienteSeleccionado?.id === usuario.id ? 'Ocultar' : 'Ver' }} Historia Clínica
           </button>
-        </td>
-      </tr>
-      <!-- Fila adicional para mostrar la historia clínica -->
-      <tr *ngIf="pacienteSeleccionado?.id === usuario.id">
-        <td colspan="6">
-          <app-historia-clinica *ngIf="pacienteSeleccionado" [pacienteId]="pacienteSeleccionado.id" [isAdmin]="true"></app-historia-clinica>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Formulario para Crear Usuarios -->
   <div class="register-container">

@@ -193,6 +193,13 @@ export class MisTurnosEspecialistaComponent implements OnInit {
         `,
         focusConfirm: false,
         showCancelButton: true,
+        customClass: {
+          popup: 'alert-popup',
+          title: 'alert-titulo',
+          confirmButton: 'alert-boton',
+          cancelButton: 'alert-titulo-error',
+        },
+        buttonsStyling: false,
         preConfirm: () => {
           const altura = (document.getElementById('altura') as HTMLInputElement)?.value;
           const peso = (document.getElementById('peso') as HTMLInputElement)?.value;

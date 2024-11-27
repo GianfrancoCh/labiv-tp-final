@@ -18,34 +18,98 @@ body, h1, h2, h3, h4, h5, h6, p, a, button {
 }
 
 .alert-popup {
-    font-family: system-ui;
-    width: 300px; 
-    padding: 10px; 
-    font-size: 14px; 
-    border-radius: 10px; 
-    border: 3px solid #000000;
-}
-
-.alert-titulo {
-    font-family: system-ui;
-    font-size: 18px; 
-    color: #00ff1e;
-}
-
-.alert-boton {
+    font-family: system-ui; 
+    background-color: #ffffff;
+    color: #333;
+    width: 500px; 
+    padding: 20px; 
+    font-size: 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Estilo para el título */
+  .alert-titulo {
+    font-family: system-ui; 
+    font-size: 24px; /* Más grande para destacar */
+    font-weight: bold;
+    color: #4c5baf;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Botón de confirmación */
+  .alert-boton {
+    font-family: system-ui; 
     background-color: #4c5baf;
-    font-family: system-ui;
-    color: rgb(255, 255, 255);
-    padding: 5px 10px; 
-    font-size: 14px; 
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #000000;
-}
-
-.alert-titulo-error{
-    font-family: system-ui;
-    font-size: 18px; 
-    color: #ff0000;
-}
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
   
+  .alert-boton:hover {
+    background-color: #3b4b92;
+    transform: scale(1.05);
+  }
   
+  /* Botón de cancelación */
+  .alert-titulo-error {
+    font-family: system-ui; 
+    background-color: #ff4c4c;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .alert-titulo-error:hover {
+    background-color: #e04444;
+    transform: scale(1.05);
+  }
+  
+  /* Contenedor de contenido del modal */
+  .swal-content {
+    font-family: system-ui; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaciado entre filas */
+  }
+  
+  .form-row {
+    font-family: system-ui; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .form-row label {
+    font-family: system-ui; 
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .form-row input,
+  .form-row textarea {
+    font-family: system-ui; 
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .form-row textarea {
+    font-family: system-ui; 
+    resize: none;
+    height: 80px;
+  }

@@ -12,6 +12,7 @@ export class Usuario {
 	contrasena: string;
 	aprobado: boolean;
 	especialidades?: string[];
+	ultimosTurnos?: { fecha: string; detalle: string }[];
 
 	constructor(tipoUsuario: string,  uid: string, id: string = '', nombre: string, apellido: string, edad: number, dni: number, imgUrl1: string, imgUrl2: string, email: string, contrasena: string, aprobado: boolean = false, especialidades?: string[]) {
 		this.tipoUsuario = tipoUsuario;

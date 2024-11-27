@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Firestore, collection, doc, updateDoc, getDocs, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, updateDoc, getDocs, addDoc, query, where} from '@angular/fire/firestore';
 import { AuthService } from '../../servicios/auth.service'; // Importa tu servicio de autenticación
 import Swal from 'sweetalert2';
 import { Usuario } from '../../clases/usuario'; // Importa la interfaz de Usuario
@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-clinica.component';
+import {MatDialog} from '@angular/material/dialog';
 
 interface Especialidad {
   id: string;
@@ -29,7 +30,7 @@ export class ListaUsuariosComponent implements OnInit {
   especialidades: Especialidad[] = [];
   pacienteSeleccionado: Usuario | null = null;
 
-  constructor(private firestore: Firestore, private authService: AuthService, private fb: FormBuilder) {}
+  constructor(private firestore: Firestore, private authService: AuthService, private fb: FormBuilder, private dialog: MatDialog) {}
 
   async ngOnInit(): Promise<void> {
     // Cargar los usuarios y especialidades al inicializar el componente
@@ -50,6 +51,59 @@ export class ListaUsuariosComponent implements OnInit {
       Swal.fire('Error', 'No se pudo verificar el perfil del usuario.', 'error');
     }
   }
+
+  mostrarHistoriaClinicaEnModal(usuario: Usuario): void {
+    if (!usuario.id) {
+      console.error('El usuario no tiene un ID válido:', usuario);
+      return;
+    }
+  
+    this.dialog.open(HistoriaClinicaComponent, {
+      width: '80%', // Ajusta el ancho del modal
+      height: '80%', // Ajusta la altura del modal
+      data: { pacienteId: usuario.id }, // Pasar datos al componente
+    });
+  }
+
+  async descargarTurnos(usuario: Usuario) {
+    try {
+      // Obtén los turnos del usuario desde Firestore
+      const turnosRef = collection(this.firestore, 'turnos');
+      const q = query(turnosRef, where('paciente', '==', usuario.id));
+      const snapshot = await getDocs(q);
+  
+      if (snapshot.empty) {
+        Swal.fire('Sin turnos', 'Este usuario no tiene turnos registrados.', 'info');
+        return;
+      }
+  
+      // Mapea los turnos a un formato adecuado
+      const turnosData = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          Fecha: data['fecha']?.toDate?.()?.toLocaleString() || data['fecha'],
+          Especialidad: data['especialidad'],
+          Especialista: data['especialistaNombre'],
+          Detalle: data['detalle']
+        };
+      });
+  
+      // Crea una hoja de trabajo
+      const hoja = XLSX.utils.json_to_sheet(turnosData);
+  
+      // Crea un libro de trabajo y agrega la hoja
+      const libro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(libro, hoja, `Turnos de ${usuario.nombre}`);
+  
+      // Descarga el archivo
+      XLSX.writeFile(libro, `turnos-${usuario.nombre}-${usuario.apellido}.xlsx`);
+      Swal.fire('Descarga exitosa', 'El archivo de turnos se ha descargado.', 'success');
+    } catch (error) {
+      console.error('Error al descargar turnos:', error);
+      Swal.fire('Error', 'No se pudieron descargar los turnos.', 'error');
+    }
+  }
+
   mostrarHistoriaClinica(usuario: Usuario): void {
     console.log(`Mostrando historia clínica del paciente: ${usuario.id}`);
     this.pacienteSeleccionado = this.pacienteSeleccionado?.id === usuario.id ? null : usuario;
