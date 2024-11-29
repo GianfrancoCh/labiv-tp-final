@@ -1,5 +1,7 @@
 <div *ngIf="isAdmin; else noAccess">
   <h2>Gestión de Usuarios</h2>
+
+  <button class="btn-descargar-excel" (click)="exportarUsuariosExcel()">Exportar Usuarios a Excel</button>
   <!-- Historia Clínica fuera de las cards -->
   <div class="historia-clinica-container" *ngIf="pacienteSeleccionado">
     <h3>Historia Clínica de {{ pacienteSeleccionado.nombre }} {{ pacienteSeleccionado.apellido }}</h3>
@@ -27,6 +29,12 @@
         <div class="card-actions">
           <button *ngIf="usuario.tipoUsuario === 'paciente'" (click)="mostrarHistoriaClinica(usuario)">
             {{ pacienteSeleccionado?.id === usuario.id ? 'Ocultar' : 'Ver' }} Historia Clínica
+          </button>
+          <button *ngIf="usuario.tipoUsuario === 'especialista' && usuario.aprobado" (click)="inhabilitarEspecialista(usuario)">
+            Inhabilitar
+          </button>
+          <button *ngIf="usuario.tipoUsuario === 'especialista' && !usuario.aprobado " (click)="habilitarEspecialista(usuario)">
+            Habilitar
           </button>
         </div>
       </div>

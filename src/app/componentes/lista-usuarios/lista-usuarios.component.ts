@@ -237,7 +237,6 @@ export class ListaUsuariosComponent implements OnInit {
       Apellido: usuario.apellido,
       Email: usuario.email,
       Tipo: usuario.tipoUsuario,
-      ID: usuario.id
     }));
 
     // Crea una hoja de trabajo
