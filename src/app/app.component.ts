@@ -3,19 +3,25 @@ import { Router } from '@angular/router';
 import { AuthService } from './servicios/auth.service';
 import {RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { routeAnimations } from './animaciones/animacion';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: [routeAnimations]
 })
 export class AppComponent {
   isLoggedIn = false;
   tipoUsuario: string | null = null; // 'paciente' o 'administrador'
 
   constructor(private router: Router, private authService: AuthService) {}
+
+  prepareRoute(outlet: RouterOutlet): string | null {
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+  }
 
   ngOnInit() {
     this.authService.isLoggedInEmitter.subscribe((loggedIn: boolean) => {

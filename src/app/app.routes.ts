@@ -13,14 +13,14 @@ import { MisTurnosPacienteComponent } from './componentes/turnos/mis-turnos-paci
 import { SolicitarTurnoComponent } from './componentes/turnos/solicitar-turno/solicitar-turno.component';
 import { PacientesComponent } from './componentes/pacientes/pacientes.component';
 import { EstadisticasComponent } from './componentes/estadisticas/estadisticas.component';
+import { animation } from '@angular/animations';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
-    { path: 'home', component: HomeComponent },
-    { path: 'ingresar', component: LoginComponent },
-    { path: 'registro', component: RegistroComponent},    
-    { path: 'test', component: HomeComponent},
-    { path: 'usuarios', component: ListaUsuariosComponent, canActivate: [AdminGuard] },
+    { path: 'home', component: HomeComponent, data: { animation: 'HomePage' } },
+    { path: 'ingresar', component: LoginComponent, data: {animation: 'LoginPage'} },
+    { path: 'registro', component: RegistroComponent, data: {animation: 'RegisterPage'} },    
+    { path: 'usuarios', component: ListaUsuariosComponent, canActivate: [AdminGuard], data: {animation: 'UsersPage'} },
     { path: 'mi-perfil', component: MiPerfilComponent},
     { path: 'mis-turnos', component: TurnosComponent, canActivate: [TurnosGuard]},
     { path: 'mis-turnos-paciente', component: MisTurnosPacienteComponent },

@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-clinica.component';
-import {MatDialog} from '@angular/material/dialog';
+import { HighlightUserTypeDirective } from '../../directivas/usuario-highlight.directive';
+
 
 interface Especialidad {
   id: string;
@@ -19,7 +20,7 @@ interface Especialidad {
   standalone: true,
   templateUrl: './lista-usuarios.component.html',
   styleUrls: ['./lista-usuarios.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent, HighlightUserTypeDirective]
 })
 export class ListaUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
@@ -30,7 +31,7 @@ export class ListaUsuariosComponent implements OnInit {
   especialidades: Especialidad[] = [];
   pacienteSeleccionado: Usuario | null = null;
 
-  constructor(private firestore: Firestore, private authService: AuthService, private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(private firestore: Firestore, private authService: AuthService, private fb: FormBuilder) {}
 
   async ngOnInit(): Promise<void> {
     // Cargar los usuarios y especialidades al inicializar el componente
@@ -50,19 +51,6 @@ export class ListaUsuariosComponent implements OnInit {
       console.error('Error al obtener el perfil del usuario:', error);
       Swal.fire('Error', 'No se pudo verificar el perfil del usuario.', 'error');
     }
-  }
-
-  mostrarHistoriaClinicaEnModal(usuario: Usuario): void {
-    if (!usuario.id) {
-      console.error('El usuario no tiene un ID válido:', usuario);
-      return;
-    }
-  
-    this.dialog.open(HistoriaClinicaComponent, {
-      width: '80%', // Ajusta el ancho del modal
-      height: '80%', // Ajusta la altura del modal
-      data: { pacienteId: usuario.id }, // Pasar datos al componente
-    });
   }
 
   async descargarTurnos(usuario: Usuario) {

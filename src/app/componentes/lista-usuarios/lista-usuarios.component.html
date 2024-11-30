@@ -13,7 +13,7 @@
 
   <div class="card-container">
     <!-- Card para cada usuario -->
-    <div class="card" *ngFor="let usuario of usuarios">
+    <div *ngFor="let usuario of usuarios" class="card" [appHighlightUserType]="usuario.tipoUsuario">
       <!-- Imagen del usuario -->
       <img
         [src]="usuario.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'"
