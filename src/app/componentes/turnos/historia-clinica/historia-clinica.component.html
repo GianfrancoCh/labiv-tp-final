@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let turno of historial">
-        <td>{{ turno.fecha }}</td>
+        <td>{{ turno.fecha | date: 'short' }}</td>
         <td>{{ turno.especialidad }}</td>
         <td>{{ turno.especialistaNombre }}</td>
         <td>
