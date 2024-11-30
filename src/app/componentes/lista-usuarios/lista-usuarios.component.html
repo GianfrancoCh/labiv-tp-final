@@ -21,7 +21,7 @@
         class="card-img"
       />
       <div class="card-body">
-        <h4>{{ usuario.nombre }} {{ usuario.apellido }}</h4>
+        <h4>{{ usuario.nombre | especialistaNombre: usuario.apellido: usuario.tipoUsuario }}</h4>
         <p>Email: {{ usuario.email }}</p>
         <p>Tipo de Usuario: {{ usuario.tipoUsuario }}</p>
 

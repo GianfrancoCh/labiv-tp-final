@@ -1,7 +1,7 @@
 import { trigger, transition, style, query, animate, group } from '@angular/animations';
 
 export const routeAnimations = trigger('routeAnimations', [
-  transition('HomePage <=> LoginPage, LoginPage <=> RegisterPage, RegisterPage <=> UsersPage', [
+  transition('HomePage <=> LoginPage, LoginPage <=> RegisterPage, RegisterPage <=> UsuariosPage', [
     query(':enter, :leave', style({ position: 'absolute', width: '100%' }), { optional: true }),
     group([
       query(':enter', [
@@ -15,7 +15,7 @@ export const routeAnimations = trigger('routeAnimations', [
     ]),
   ]),
 
-  transition('UsersPage <=> ProfilePage, AppointmentsPage <=> UsersPage', [
+  transition('UsuariosPage <=> ProfilePage, AppointmentsPage <=> UsuariosPage', [
     query(':enter, :leave', style({ position: 'absolute', width: '100%' }), { optional: true }),
     group([
       query(':enter', [
@@ -26,6 +26,34 @@ export const routeAnimations = trigger('routeAnimations', [
         style({ transform: 'translateY(0)', opacity: 1 }),
         animate('500ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
       ], { optional: true })
+    ]),
+  ]),
+
+  transition('* <=> UsuariosPage', [
+    query(':enter, :leave', style({ position: 'absolute', width: '100%' }), { optional: true }),
+    group([
+      query(':enter', [
+        style({ transform: 'translateY(100%)', opacity: 0 }),
+        animate('500ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ], { optional: true }),
+      query(':leave', [
+        style({ transform: 'translateY(0)', opacity: 1 }),
+        animate('500ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
+      ], { optional: true }),
+    ]),
+  ]),
+
+  transition('* <=> Estadisticas', [
+    query(':enter, :leave', style({ position: 'absolute', width: '100%' }), { optional: true }),
+    group([
+      query(':enter', [
+        style({ transform: 'translateY(100%)', opacity: 0 }),
+        animate('500ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ], { optional: true }),
+      query(':leave', [
+        style({ transform: 'translateY(0)', opacity: 1 }),
+        animate('500ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
+      ], { optional: true }),
     ]),
   ]),
   transition('* <=> *', [

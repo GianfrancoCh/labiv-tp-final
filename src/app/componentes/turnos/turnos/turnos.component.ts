@@ -5,13 +5,16 @@ import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Turno } from '../../../clases/turno'; 
+import {EstadoTurnoDirective} from '../../../directivas/estado-turno.directive';
+import { EstadoFilaDirective } from '../../../directivas/estado-turno-fila.directive';
+
 
 @Component({
   selector: 'app-turnos',
   templateUrl: './turnos.component.html',
   styleUrls: ['./turnos.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, EstadoTurnoDirective, EstadoFilaDirective]
 })
 export class TurnosComponent implements OnInit {
   turnos: Turno[] = [];
@@ -122,3 +125,4 @@ export class TurnosComponent implements OnInit {
     }
   }
 }
+

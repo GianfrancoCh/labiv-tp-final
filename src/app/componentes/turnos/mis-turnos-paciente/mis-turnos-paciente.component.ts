@@ -5,13 +5,15 @@ import { Firestore, collection, getDocs, query, where, updateDoc, doc,getDoc } f
 import { AuthService } from '../../../servicios/auth.service';
 import { Turno } from '../../../clases/turno'; 
 import Swal from 'sweetalert2';
+import { EstadoTurnoCardDirective } from '../../../directivas/estado-turno-card.directive';
+import { EstadoTurnoDirective } from '../../../directivas/estado-turno.directive';
 
 @Component({
   selector: 'app-mis-turnos-paciente',
   templateUrl: './mis-turnos-paciente.component.html',
   styleUrls: ['./mis-turnos-paciente.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, EstadoTurnoCardDirective, EstadoTurnoDirective]
 })
 export class MisTurnosPacienteComponent implements OnInit {
   turnos: Turno[] = []; 

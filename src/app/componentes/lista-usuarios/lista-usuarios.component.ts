@@ -8,6 +8,7 @@ import { FormsModule, FormGroup, FormBuilder, Validators, ReactiveFormsModule } 
 import * as XLSX from 'xlsx';
 import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-clinica.component';
 import { HighlightUserTypeDirective } from '../../directivas/usuario-highlight.directive';
+import { NombreEspecialistaPipe } from '../../pipes/nombre-especialista.pipe';
 
 
 interface Especialidad {
@@ -20,7 +21,7 @@ interface Especialidad {
   standalone: true,
   templateUrl: './lista-usuarios.component.html',
   styleUrls: ['./lista-usuarios.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent, HighlightUserTypeDirective]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent, HighlightUserTypeDirective, NombreEspecialistaPipe]
 })
 export class ListaUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];

@@ -25,18 +25,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let turno of turnosFiltrados">
+      <tr *ngFor="let turno of turnosFiltrados" [appEstadoFila]="turno.estado">
         <td>{{ turno.especialidad }}</td>
         <td>{{ turno.especialistaNombre }}</td>
         <td>{{ turno.pacienteNombre }}</td>
         <td>{{ turno.fecha | date: 'short' }}</td>
         <td>
-          <span class="status-badge" [ngClass]="{
-            'status-warning': turno.estado === 'pendiente',
-            'status-success': turno.estado === 'aceptado',
-            'status-info': turno.estado === 'realizado',
-            'status-danger': turno.estado === 'rechazado' || turno.estado === 'cancelado'
-          }">
+          <span  appEstadoTurno="{{ turno.estado }}">
             {{ turno.estado | uppercase }}
           </span>
         </td>
