@@ -4,11 +4,12 @@ import { AuthService } from './servicios/auth.service';
 import {RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { routeAnimations } from './animaciones/animacion';
+import { NavbarBotonesDirective } from './directivas/navbar-botones.directive';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, NavbarBotonesDirective],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [routeAnimations]

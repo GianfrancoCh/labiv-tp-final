@@ -1,7 +1,7 @@
 :host {
   display: block;
   padding: 20px;
-  background: linear-gradient(135deg, #e3f2fd, #ffcdd2);
+  background: linear-gradient(135deg, #eb92e5, #ffcdd2);
   font-family: Arial, sans-serif;
 }
 
@@ -111,10 +111,6 @@ button[type="submit"]:hover {
   transition: transform 0.2s ease, margin-bottom 0.3s ease;
 }
 
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
 
 .card img {
   width: 100%;

@@ -6,6 +6,7 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../servicios/auth.service';
 import Swal from 'sweetalert2';  
+import { HighlightUserTypeDirective } from '../../directivas/usuario-highlight.directive';
 
 
 @Component({
@@ -13,7 +14,7 @@ import Swal from 'sweetalert2';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, RouterModule, CommonModule]
+  imports: [ReactiveFormsModule, RouterModule, CommonModule, HighlightUserTypeDirective]
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -22,12 +23,12 @@ export class LoginComponent {
   // usuariosAccesoRapido: Usuario[] = [];
 
   usuariosAccesoRapido = [
-    { nombre: 'Paciente Uno', email: 'gianfranco.chiarizia+test1@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FzEOCTjvhQoYH9htTdMgiSw0YB8i2%2F1-images%20(1).png?alt=media&token=fd4401ca-85f1-42fd-bc50-57248a0f2c99"},
-    { nombre: 'Paciente Dos', email: 'gianfrancochiarizia+test2@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FnoxQ5DY9FQhbUslJz5B6lrWmQa52%2F1-images%20(2).jpg?alt=media&token=1857e512-ad50-41da-afd2-9cb78da518cd"},
-    { nombre: 'Paciente Tres', email: 'gianfrancochiarizia+test4@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FD65uv4JE6iaNHsOCbsuZVX9C4W32%2F1-images.jpg?alt=media&token=2e1a3c34-db2b-4cd2-80dc-120aa7233655"},
-    { nombre: 'Especialista Uno', email: 'gianfrancochiarizia+test3@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FNkDLrITUJ7TLkt6a1RxOE6UCvsw2%2F1-images%20(4).jpg?alt=media&token=5dce33ac-b36e-4dd3-a5b3-1954f3b3ccf1"},
-    { nombre: 'Especialista Dos', email: 'gianfranco.chiarizia+test5@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FCzmwgIdhzZeigo9PH1ulh9bccim2%2F1-8dc56b05c21e5b4b45fbb937d455b0e9.jpg?alt=media&token=ec68dc88-a9a7-4b30-b503-abd11a116990" },
-    { nombre: 'Administrador', email: 'admin@test.com', password: '1234hola', imgUrl: "https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FJb3b5YOB0OVbw38Kro2NGZRT5aX2%2Fimages%20(3).jpg?alt=media&token=b3c1261b-16e6-44d1-a312-809623fd46c3"}
+    { nombre: 'Paciente Uno', email: 'gianfranco.chiarizia+test1@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FzEOCTjvhQoYH9htTdMgiSw0YB8i2%2F1-images%20(1).png?alt=media&token=fd4401ca-85f1-42fd-bc50-57248a0f2c99", tipoUsuario: 'paciente' },
+    { nombre: 'Paciente Dos', email: 'gianfrancochiarizia+test2@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FnoxQ5DY9FQhbUslJz5B6lrWmQa52%2F1-images%20(2).jpg?alt=media&token=1857e512-ad50-41da-afd2-9cb78da518cd", tipoUsuario: 'paciente'},
+    { nombre: 'Paciente Tres', email: 'gianfrancochiarizia+test4@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FD65uv4JE6iaNHsOCbsuZVX9C4W32%2F1-images.jpg?alt=media&token=2e1a3c34-db2b-4cd2-80dc-120aa7233655", tipoUsuario: 'paciente'},
+    { nombre: 'Especialista Uno', email: 'gianfrancochiarizia+test3@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FNkDLrITUJ7TLkt6a1RxOE6UCvsw2%2F1-images%20(4).jpg?alt=media&token=5dce33ac-b36e-4dd3-a5b3-1954f3b3ccf1", tipoUsuario: 'especialista' },
+    { nombre: 'Especialista Dos', email: 'gianfranco.chiarizia+test5@gmail.com', password: '1234hola', imgUrl:"https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FCzmwgIdhzZeigo9PH1ulh9bccim2%2F1-8dc56b05c21e5b4b45fbb937d455b0e9.jpg?alt=media&token=ec68dc88-a9a7-4b30-b503-abd11a116990",tipoUsuario: 'especialista' },
+    { nombre: 'Administrador', email: 'admin@test.com', password: '1234hola', imgUrl: "https://firebasestorage.googleapis.com/v0/b/labiv-tp-final-56381.firebasestorage.app/o/usuarios%2FJb3b5YOB0OVbw38Kro2NGZRT5aX2%2Fimages%20(3).jpg?alt=media&token=b3c1261b-16e6-44d1-a312-809623fd46c3",tipoUsuario: 'administrador'}
   ];
 
   constructor(private router: Router, private fb: FormBuilder, private firestore: Firestore, private authService: AuthService) {

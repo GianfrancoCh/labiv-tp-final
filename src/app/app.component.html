@@ -1,40 +1,87 @@
 <nav class="navbar">
   <ul>
-    <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
-    <li *ngIf="!isLoggedIn"><a routerLink="/ingresar" routerLinkActive="active">Ingresar</a></li>
-    <li *ngIf="!isLoggedIn"><a routerLink="/registro" routerLinkActive="active">Registrarse</a></li>
-
+    <li><a
+      routerLink="/home"
+      routerLinkActive="active"
+      appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'"
+    >
+      Home
+    </a></li>
+    <li *ngIf="!isLoggedIn">
+      <a
+        routerLink="/ingresar"
+        routerLinkActive="active"
+        appNavbarBotones
+        [hoverBackgroundColor]="'#007bff'"
+        [hoverTextColor]="'#ffffff'"
+      >
+        Ingresar
+      </a>
+    </li>
+    <li *ngIf="!isLoggedIn">
+      <a
+        routerLink="/registro"
+        routerLinkActive="active"
+        appNavbarBotones
+        [hoverBackgroundColor]="'#007bff'"
+        [hoverTextColor]="'#ffffff'"
+      >
+      Registrarse</a></li>
     <!-- Mostrar elementos para usuarios logueados -->
     <li *ngIf="isLoggedIn">
-      <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>
+      <a
+        routerLink="/mi-perfil"
+        routerLinkActive="active"
+        appNavbarBotones
+        [hoverBackgroundColor]="'#007bff'"
+        [hoverTextColor]="'#ffffff'"
+      >
+        Mi Perfil
+      </a>
     </li>
     <li *ngIf="isLoggedIn && tipoUsuario === 'paciente' || tipoUsuario === 'especialista'">
-      <a routerLink="/mis-turnos" routerLinkActive="active">Mis Turnos</a>
+      <a routerLink="/mis-turnos" routerLinkActive="active" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Mis Turnos</a>
     </li>
     <li *ngIf="isLoggedIn && tipoUsuario === 'paciente' || tipoUsuario === 'administrador'">
-      <a routerLink="/solicitar-turno" routerLinkActive="active">Solicitar Turno</a>
+      <a routerLink="/solicitar-turno" routerLinkActive="active" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Solicitar Turno</a>
     </li>
 
     <!-- Mostrar elementos solo para administradores -->
     <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
-      <a routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
+      <a routerLink="/usuarios" routerLinkActive="active" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Usuarios</a>
     </li>
     <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
-      <a routerLink="/turnos" routerLinkActive="active">Gestionar Turnos</a>
+      <a routerLink="/turnos" routerLinkActive="active" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Gestionar Turnos</a>
     </li>
     <li *ngIf="isLoggedIn && tipoUsuario === 'administrador'">
-      <a routerLink="/estadisticas" routerLinkActive="active">Estadisticas</a>
+      <a routerLink="/estadisticas" routerLinkActive="active" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Estadisticas</a>
     </li>
 
     <!-- Mostrar elementos solo para especialistas -->
     <li *ngIf="isLoggedIn && tipoUsuario === 'especialista'">
-      <a routerLink="/pacientes" routerLinkActive="active">Pacientes</a>
+      <a routerLink="/pacientes" routerLinkActive="active" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Pacientes</a>
     </li>
 
 
     <!-- Botón de Cerrar Sesión -->
     <li *ngIf="isLoggedIn" class="logout">
-      <a (click)="logout()">Cerrar Sesión</a>
+      <a (click)="logout()" appNavbarBotones
+      [hoverBackgroundColor]="'#007bff'"
+      [hoverTextColor]="'#ffffff'">Cerrar Sesión </a>
     </li>
   </ul>
 </nav>

@@ -49,13 +49,9 @@ body, h1, h2, h3, h4, h5, h6, p, a, button {
     display: block;
 }
 
-.navbar a:hover {
-    background-color: #575757;
-    border-radius: 5px;
-}
 
 .active {
-    background-color: #575757;
+    background-color: #007bff;
     border-radius: 5px;
 }
 

@@ -11,9 +11,14 @@
     ></app-historia-clinica>
   </div>
 
-  <div class="card-container">
+  <div  class="card-container" >
     <!-- Card para cada usuario -->
-    <div *ngFor="let usuario of usuarios" class="card" [appHighlightUserType]="usuario.tipoUsuario">
+    <div *ngFor="let usuario of usuarios"  appHoverEffect
+    [hoverColor]="'#f0f0f0'"
+    [hoverTextColor]="'#2c3e50'"
+    [hoverTransform]="'scale(1.05)'"
+    class="card"
+    [appHighlightUserType]="usuario.tipoUsuario">
       <!-- Imagen del usuario -->
       <img
         [src]="usuario.imgUrl1 || 'ruta-a-imagen-por-defecto.jpg'"
