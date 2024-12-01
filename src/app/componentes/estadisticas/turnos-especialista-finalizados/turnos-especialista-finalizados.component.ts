@@ -1,103 +1,88 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Firestore, collection, getDocs, doc, getDoc } from '@angular/fire/firestore';
 import { Chart } from 'chart.js';
-import { Turno } from '../../../clases/turno';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-turnos-especialista-finalizados',
   templateUrl: './turnos-especialista-finalizados.component.html',
   styleUrls: ['./turnos-especialista-finalizados.component.css'],
-  imports: [CommonModule, FormsModule],
   standalone: true,
 })
 export class TurnosEspecialistaFinalizadosComponent implements OnInit {
-  turnos: Turno[] = []; // Lista completa de turnos
-  turnosFiltrados: Turno[] = []; // Turnos filtrados
-  especialistas: { id: string; nombre: string }[] = []; // Lista de especialistas
-  especialistaSeleccionado: string = ''; // Especialista seleccionado para el filtro
+  @ViewChild('turnosFinalizadosChartCanvas', { static: true }) chartCanvas!: ElementRef<HTMLCanvasElement>;
+  turnos: any[] = [];
+  turnosPorEspecialista: Record<string, number> = {};
+  especialistas: Record<string, string> = {}; // Mapea IDs a nombres
   fechaInicio: Date | null = null; // Fecha inicial del filtro
   fechaFin: Date | null = null; // Fecha final del filtro
-  chart: Chart | null = null; // Referencia al gráfico
+  chart: Chart | null = null;
 
   constructor(private firestore: Firestore) {}
 
-  ngOnInit(): void {
-    this.cargarTurnos();
+  async ngOnInit() {
+    await this.cargarTurnos();
   }
 
-  async cargarTurnos(): Promise<void> {
+  async cargarTurnos() {
     const turnosRef = collection(this.firestore, 'turnos');
     const snapshot = await getDocs(turnosRef);
 
-    const turnos: Turno[] = snapshot.docs.map((doc) => {
-      const data = doc.data() as any;
-      if (data.fecha && data.fecha.seconds) {
-        data.fecha = new Date(data.fecha.seconds * 1000);
-      }
-      return new Turno(
-        doc.id,
-        data.fecha,
-        data.estado,
-        data.especialidad,
-        data.paciente,
-        data.especialista,
-        data.pacienteNombre,
-        data.especialistaNombre,
-        data.resenaPaciente,
-        data.resenaEspecialista,
-        data.comentario,
-        data.diagnostico
-      );
-    });
+    // Filtrar solo turnos realizados
+    this.turnos = await Promise.all(
+      snapshot.docs.map(async (docSnap) => {
+        const turno = docSnap.data();
+        if (turno['estado'] !== 'realizado') return null; // Solo turnos finalizados
+        const fecha = turno['fecha']?.toDate() || null;
 
-    for (let turno of turnos) {
-      if (turno.especialista) {
-        const especialistaRef = doc(this.firestore, 'usuarios', turno.especialista);
-        const especialistaSnapshot = await getDoc(especialistaRef);
-        if (especialistaSnapshot.exists()) {
-          turno.especialistaNombre = especialistaSnapshot.data()['nombre'];
-        } else {
-          turno.especialistaNombre = 'Desconocido';
+        const especialistaId = turno['especialista'];
+        let especialistaNombre = 'Desconocido';
+        if (especialistaId) {
+          if (!this.especialistas[especialistaId]) {
+            const especialistaRef = doc(this.firestore, 'usuarios', especialistaId);
+            const especialistaSnap = await getDoc(especialistaRef);
+            especialistaNombre =
+              especialistaSnap.exists() && especialistaSnap.data()['nombre']
+                ? especialistaSnap.data()['nombre']
+                : 'Desconocido';
+            this.especialistas[especialistaId] = especialistaNombre;
+          } else {
+            especialistaNombre = this.especialistas[especialistaId];
+          }
         }
-      }
-    }
 
-    this.turnos = turnos;
-    this.especialistas = Array.from(
-      new Set(
-        this.turnos.map((turno) => ({
-          id: turno.especialista,
-          nombre: turno.especialistaNombre ?? 'Desconocido',
-        }))
-      )
-    );
+        return {
+          ...turno,
+          fecha,
+          especialistaNombre,
+        };
+      })
+    ).then((result) => result.filter((turno) => turno !== null)); // Remover nulls
+
     this.aplicarFiltro();
   }
 
   aplicarFiltro(): void {
-    if (!this.fechaInicio || !this.fechaFin || !this.especialistaSeleccionado) {
-      this.turnosFiltrados = [];
-      this.renderChart();
-      return;
-    }
-  
-    this.turnosFiltrados = this.turnos.filter((turno) => {
+    // Reiniciamos los datos
+    this.turnosPorEspecialista = {};
+
+    const turnosFiltrados = this.turnos.filter((turno) => {
       const fechaTurno = turno.fecha;
       if (!fechaTurno) return false;
-  
+
       return (
-        turno.estado === 'realizado' &&
-        turno.especialista === this.especialistaSeleccionado &&
-        this.fechaInicio !== null && // Validación explícita
-        this.fechaFin !== null && // Validación explícita
-        fechaTurno >= this.fechaInicio &&
-        fechaTurno <= this.fechaFin
+        (!this.fechaInicio || fechaTurno >= this.fechaInicio) &&
+        (!this.fechaFin || fechaTurno <= this.fechaFin)
       );
     });
-  
+
+    turnosFiltrados.forEach((turno) => {
+      const especialista = turno.especialistaNombre;
+      this.turnosPorEspecialista[especialista] =
+        (this.turnosPorEspecialista[especialista] || 0) + 1;
+    });
+
     this.renderChart();
   }
 
@@ -106,52 +91,119 @@ export class TurnosEspecialistaFinalizadosComponent implements OnInit {
     this.fechaInicio = input.valueAsDate;
     this.aplicarFiltro();
   }
-  
+
   onFechaFinChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.fechaFin = input.valueAsDate;
     this.aplicarFiltro();
   }
 
-
-  renderChart(): void {
-    const labels = Array.from(
-      new Set(this.turnosFiltrados.map((turno) => turno.fecha.toLocaleDateString('es-ES')))
-    );
-    const valores = labels.map(
-      (label) =>
-        this.turnosFiltrados.filter(
-          (turno) => turno.fecha.toLocaleDateString('es-ES') === label
-        ).length
-    );
+  renderChart() {
+    const labels = Object.keys(this.turnosPorEspecialista);
+    const values = Object.values(this.turnosPorEspecialista);
 
     if (this.chart) {
       this.chart.destroy();
     }
 
-    const ctx = document.getElementById('graficoTurnosEspecialista') as HTMLCanvasElement;
-    this.chart = new Chart(ctx, {
+    this.chart = new Chart(this.chartCanvas.nativeElement, {
       type: 'bar',
       data: {
         labels,
         datasets: [
           {
-            label: 'Turnos Finalizados',
-            data: valores,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            label: 'Turnos Finalizados por Especialista',
+            data: values,
+            backgroundColor: '#4c5baf',
+            borderColor: '#34568b',
             borderWidth: 1,
+            hoverBackgroundColor: '#274b72',
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+          title: {
+            display: true,
+            text: 'Turnos Finalizados por Especialista',
+            font: {
+              size: 20,
+            },
+          },
+        },
         scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Especialistas',
+              font: {
+                size: 16,
+              },
+            },
+            ticks: {
+              font: {
+                size: 14,
+              },
+            },
+          },
           y: {
             beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Cantidad de Turnos',
+              font: {
+                size: 16,
+              },
+            },
+            ticks: {
+              font: {
+                size: 14,
+              },
+            },
           },
         },
       },
     });
+  }
+
+  descargarPDF(): void {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: 'a4',
+    });
+
+    // Título del PDF
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('Estadísticas: Turnos Finalizados por Especialista', 10, 30);
+
+    // Tabla de datos
+    const labels = this.chart?.data.labels as string[];
+    const values = this.chart?.data.datasets[0].data as number[];
+
+    autoTable(doc, {
+      startY: 50,
+      head: [['Especialista', 'Cantidad']],
+      body: labels.map((label, index) => [label, values[index].toString()]),
+      styles: { fontSize: 12 },
+      headStyles: { fillColor: [76, 175, 80], textColor: 255 },
+      bodyStyles: { textColor: 50 },
+    });
+
+    const lastPosition = (doc as any).lastAutoTable.finalY || 70;
+
+    // Gráfico
+    const canvas = this.chartCanvas.nativeElement;
+    const imgData = canvas.toDataURL('image/png');
+    doc.addImage(imgData, 'PNG', 15, lastPosition + 10, 500, 250);
+
+    // Descargar el PDF
+    doc.save('turnos-finalizados.pdf');
   }
 }

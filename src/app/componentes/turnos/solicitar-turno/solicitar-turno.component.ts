@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Especialidad } from '../../../clases/especialidad';
 import Swal from 'sweetalert2';
+import { CaptchaDirective } from '../../../directivas/captcha.directive';
 
 moment.locale('es'); // Configura Moment.js para usar el español
 
@@ -18,7 +19,7 @@ moment.locale('es'); // Configura Moment.js para usar el español
   templateUrl: './solicitar-turno.component.html',
   styleUrls: ['./solicitar-turno.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [CommonModule, FormsModule, RouterModule,CaptchaDirective]
 })
 export class SolicitarTurnoComponent implements OnInit {
   especialistas: any[] = [];
@@ -27,6 +28,7 @@ export class SolicitarTurnoComponent implements OnInit {
   diasDisponibles: string[] = [];
   horariosDisponibles: string[] = [];
   cargando: boolean = true;
+  
 
   usuario: Usuario | null = null; // Información del usuario logueado
   tipoUsuario: string = ''; // 'paciente' o 'administrador'
@@ -37,6 +39,8 @@ export class SolicitarTurnoComponent implements OnInit {
   especialidadSeleccionada: string = '';
   diaSeleccionado: string = '';
   horarioSeleccionado: string = '';
+
+  captchaValido: boolean = false;
 
   constructor(private firestore: Firestore, private authService: AuthService, private router: Router) {}
 
@@ -56,6 +60,20 @@ export class SolicitarTurnoComponent implements OnInit {
       console.error('Error al cargar especialistas:', error);
     } finally {
       this.cargando = false;
+    }
+  }
+
+  onCaptchaResolved(isResolved: boolean): void {
+    this.captchaValido = isResolved; // Actualiza el estado del captcha
+    if (isResolved) {
+      console.log('CAPTCHA resuelto correctamente.');
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Captcha Incorrecto',
+        text: 'Por favor, resuelve correctamente el captcha para continuar.',
+        confirmButtonText: 'Entendido',
+      });
     }
   }
 

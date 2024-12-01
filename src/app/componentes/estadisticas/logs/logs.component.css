@@ -1,14 +1,14 @@
-.container {
-    font-family: "Roboto", Arial, sans-serif;
-    margin-top: 40px;
-    max-height: 85vh; 
-    width: 800px;
-    max-width: 1200px;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
+.container{
+  font-family: system-ui;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
   
 h2 {
@@ -78,3 +78,17 @@ h2 {
     background: #1d3c5e;
   }
   
+.btn-descargar{
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-descargar:hover {
+  background-color: #45a049;
+}

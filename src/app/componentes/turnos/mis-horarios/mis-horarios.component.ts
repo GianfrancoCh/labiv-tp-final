@@ -3,13 +3,16 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Usuario } from '../../../clases/usuario';
 import { CommonModule } from '@angular/common';
+import { CaptchaDirective } from '../../../directivas/captcha.directive';
+import { CaptchaConfigService } from '../../../servicios/captcha-config.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mis-horarios',
   templateUrl: './mis-horarios.component.html',
   styleUrls: ['./mis-horarios.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, CaptchaDirective]
 })
 export class MisHorariosComponent implements OnInit {
   horariosForm!: FormGroup;
@@ -17,7 +20,11 @@ export class MisHorariosComponent implements OnInit {
   diasSemana: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   opcionesHorario: string[] = [];
 
-  constructor(private fb: FormBuilder, private firestore: Firestore) {}
+  captchaHabilitado: boolean = true; 
+  captchaValido: boolean = false; 
+
+
+  constructor(private fb: FormBuilder, private firestore: Firestore,private captchaConfigService: CaptchaConfigService) {}
 
   async ngOnInit(): Promise<void> {
     // Inicializar el formulario
@@ -40,6 +47,22 @@ export class MisHorariosComponent implements OnInit {
         const data = userDoc.data();
         this.cargarHorariosExistentes(data ? data['especialidades'] || [] : []);
       }
+    }
+
+    this.captchaHabilitado = await this.captchaConfigService.obtenerEstadoCaptcha();
+  }
+
+  onCaptchaResolved(isResolved: boolean): void {
+    this.captchaValido = isResolved; // Actualiza el estado del captcha
+    if (isResolved) {
+      console.log('CAPTCHA resuelto correctamente.');
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Captcha Incorrecto',
+        text: 'Por favor, resuelve correctamente el captcha para continuar.',
+        confirmButtonText: 'Entendido',
+      });
     }
   }
 

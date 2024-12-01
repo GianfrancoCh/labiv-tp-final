@@ -58,8 +58,17 @@
   </div>
 
   <!-- Botón para confirmar el turno -->
+  <!-- Captcha solo para pacientes -->
+  <div *ngIf="tipoUsuario === 'paciente' && diaSeleccionado && horarioSeleccionado">
+    <div appCaptcha (captchaResolved)="onCaptchaResolved($event)"></div>
+  </div>
+
+  <!-- Botón para confirmar el turno -->
   <div *ngIf="diaSeleccionado && horarioSeleccionado">
-    <button (click)="confirmarTurno()" class="btn-confirmar">
+    <button 
+      (click)="confirmarTurno()" 
+      class="btn-confirmar" 
+      [disabled]="tipoUsuario === 'paciente' && !captchaValido">
       Confirmar Turno
     </button>
   </div>

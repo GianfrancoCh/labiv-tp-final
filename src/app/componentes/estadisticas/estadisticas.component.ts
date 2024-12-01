@@ -16,8 +16,8 @@ import { TurnosEspecialistaFinalizadosComponent } from './turnos-especialista-fi
     TurnosEspecialidadComponent,
     TurnosDiaComponent,
     TurnosEspecialistaComponent,
-    TurnosEspecialistaFinalizadosComponent,
-  ],
+    TurnosEspecialistaFinalizadosComponent
+],
   templateUrl: './estadisticas.component.html',
   styleUrls: ['./estadisticas.component.css'],
 })

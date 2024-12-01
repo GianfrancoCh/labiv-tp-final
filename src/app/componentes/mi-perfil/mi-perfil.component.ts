@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, For
 import { AuthService } from '../../servicios/auth.service';
 import { Usuario } from '../../clases/usuario';
 import { CommonModule } from '@angular/common';
-import { Firestore, collection, query, where, getDocs, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs, doc, getDoc, setDoc} from '@angular/fire/firestore';
 import { MisHorariosComponent } from '../turnos/mis-horarios/mis-horarios.component'; 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Swal from 'sweetalert2';
 import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-clinica.component';
 import { CaptchaDirective } from '../../directivas/captcha.directive';
+import { CaptchaConfigService } from '../../servicios/captcha-config.service';
 
 @Component({
   selector: 'app-mi-perfil',
@@ -22,11 +23,12 @@ export class MiPerfilComponent implements OnInit {
   usuario: Usuario | null = null;
   historial: any[] = [];
   logoUrl: string = '';
-  captchaValido: boolean = false;
   especialidades: string[] = []; // Lista de especialidades disponibles
   especialidadSeleccionada: string = ''; // Especialidad seleccionada por el usuario
-
-  constructor(private authService: AuthService, private fb: FormBuilder, private firestore: Firestore) {}
+  
+  captchaValido: boolean = false;
+  captchaHabilitado: boolean = true;
+  constructor(private authService: AuthService, private fb: FormBuilder, private firestore: Firestore, private captchaConfigService: CaptchaConfigService) {}
 
   async ngOnInit(): Promise<void> {
     try {
@@ -37,8 +39,36 @@ export class MiPerfilComponent implements OnInit {
         // Extraer especialidades únicas de los turnos
         this.especialidades = Array.from(new Set(this.historial.map((turno) => turno.especialidad || '')));
       }
+      if (this.usuario?.tipoUsuario === 'administrador') {
+        this.captchaHabilitado = await this.captchaConfigService.obtenerEstadoCaptcha();
+      }
+
+      this.captchaHabilitado = await this.captchaConfigService.obtenerEstadoCaptcha();
     } catch (error) {
       console.error('Error al obtener el perfil del usuario:', error);
+    }
+  }
+
+  private async obtenerEstadoCaptcha(): Promise<boolean> {
+    const configRef = doc(this.firestore, 'configuracion', 'captcha');
+    const configSnap = await getDoc(configRef);
+
+    if (configSnap.exists()) {
+      return configSnap.data()['habilitado'] ?? true; // Por defecto, habilitado
+    }
+    return true;
+  }
+
+  // Cambiar el estado del captcha
+  async toggleCaptcha(event: Event): Promise<void> {
+    const habilitado = (event.target as HTMLInputElement).checked;
+    this.captchaHabilitado = habilitado;
+
+    try {
+      await this.captchaConfigService.setCaptchaHabilitado(habilitado);
+      console.log('Estado del captcha actualizado:', habilitado);
+    } catch (error) {
+      console.error('Error al actualizar el estado del captcha:', error);
     }
   }
 
@@ -71,7 +101,6 @@ export class MiPerfilComponent implements OnInit {
   async generarHistoriaClinicaPDF() {
     const logoUrl = 'https://cdn-icons-png.flaticon.com/512/75/75264.png';
 
-    if (this.captchaValido) {
       try {
         const doc = new jsPDF();
 
@@ -120,9 +149,6 @@ export class MiPerfilComponent implements OnInit {
         console.error('Error al generar el PDF:', error);
         Swal.fire('Error', 'No se pudo generar el PDF.', 'error');
       }
-    } else {
-      console.log('captcha invalido');
-    }
   }
 
   private toBase64(url: string): Promise<string> {

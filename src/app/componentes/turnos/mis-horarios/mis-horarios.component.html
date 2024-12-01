@@ -31,5 +31,6 @@
       </div>
     </div>
   </div>
-  <button type="submit">Guardar Horarios</button>
+  <div *ngIf="captchaHabilitado" appCaptcha (captchaResolved)="onCaptchaResolved($event)"></div>
+  <button class="btn-confirmar" [disabled]="captchaHabilitado && !captchaValido">Guardar Horarios</button>
 </form>

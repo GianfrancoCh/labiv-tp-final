@@ -15,6 +15,16 @@
       </div>
     </div>
 
+    <div *ngIf="usuario?.tipoUsuario === 'administrador'" class="captcha-toggle">
+      <label>
+        <input 
+          type="checkbox" 
+          [checked]="captchaHabilitado" 
+          (change)="toggleCaptcha($event)">
+        Habilitar/Deshabilitar captcha
+      </label>
+    </div>
+
     <div *ngIf="usuario?.tipoUsuario === 'paciente' && historial.length > 0" class="btn-container">
       <div class="filter-container">
         <label for="especialidadSelect">Filtrar por Especialidad:</label>
@@ -23,13 +33,13 @@
           <option *ngFor="let especialidad of especialidades">{{ especialidad }}</option>
         </select>
       </div>
-      <div appCaptcha (captchaResolved)="onCaptchaResolved($event)"></div>
+      <div *ngIf="captchaHabilitado" appCaptcha (captchaResolved)="onCaptchaResolved($event)"></div>
       <button
-      class="btn-historia-clinica"
-      [disabled]="!captchaValido" 
-      (click)="generarHistoriaClinicaPDF()">
-      Descargar Historia Clínica
-    </button>
+        class="btn-historia-clinica"
+        [disabled]="captchaHabilitado && !captchaValido" 
+        (click)="generarHistoriaClinicaPDF()">
+        Descargar Historia Clínica
+      </button>
     </div>
   </div>
   <!-- Historia Clínica -->
