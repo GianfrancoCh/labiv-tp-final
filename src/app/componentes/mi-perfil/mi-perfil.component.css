@@ -157,3 +157,47 @@
     height: 120px;
   }
 }
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Alinea el contenido horizontalmente en el centro */
+  gap: 12px; /* Incrementa el espacio entre los elementos */
+  margin: 0 auto 20px auto; /* Centra horizontalmente */
+  padding: 15px;
+  background-color: #ffffff; /* Fondo blanco para destacar el filtro */
+  border: 1px solid #ddd; /* Borde sutil */
+  border-radius: 12px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  max-width: 400px; /* Limita el ancho máximo del contenedor */
+  width: 100%; /* Se adapta al ancho disponible */
+}
+
+.filter-container label {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.filter-select {
+  width: 100%;
+  max-width: 300px; /* Define un ancho máximo para el select */
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filter-select:focus {
+  border-color: #34568b;
+  box-shadow: 0 0 6px rgba(52, 86, 139, 0.5);
+  outline: none;
+}
+
+.filter-select:hover {
+  border-color: #888;
+  background-color: #f3f3f3;
+}

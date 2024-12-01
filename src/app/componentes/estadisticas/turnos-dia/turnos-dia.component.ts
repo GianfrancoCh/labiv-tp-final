@@ -10,6 +10,8 @@ import {
   CategoryScale,
 } from 'chart.js';
 import moment from 'moment';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-turnos-dia',
@@ -132,5 +134,48 @@ export class TurnosDiaComponent implements OnInit {
         },
       },
     });
+  }
+
+  async descargarPDF(): Promise<void> {
+    const doc = new jsPDF();
+  
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('Estadísticas de Turnos por Día', 10, 10);
+  
+    doc.setFontSize(12);
+    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()}`, 10, 20);
+  
+    // Agrega una tabla con los turnos por día
+    autoTable(doc, {
+      startY: 30,
+      head: [['Fecha', 'Cantidad']],
+      body: Object.entries(this.turnosPorDia).map(([fecha, cantidad]) => [
+        fecha,
+        cantidad.toString(),
+      ]),
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [76, 175, 80], textColor: 255 },
+      bodyStyles: { textColor: 50 },
+    });
+  
+    const lastPosition = (doc as any).lastAutoTable.finalY || 30;
+  
+    // Captura el gráfico del canvas
+    const canvas = document.getElementById('turnosDiaChart') as HTMLCanvasElement;
+  
+    if (canvas) {
+      const imgData = canvas.toDataURL('image/png'); // Convierte el canvas a una imagen base64
+      doc.addImage(imgData, 'PNG', 10, lastPosition + 10, 180, 90); // Agrega la imagen al PDF
+    } else {
+      console.error('El gráfico no se encontró.');
+      doc.text('El gráfico no se pudo incluir en el reporte.', 10, lastPosition + 20);
+    }
+  
+    // Agrega una nota al final
+    doc.text('Clinica Online by Gianfranco Chiarizia', 10, lastPosition + 110);
+  
+    // Descarga el PDF
+    doc.save('estadisticas_turnos_por_dia.pdf');
   }
 }

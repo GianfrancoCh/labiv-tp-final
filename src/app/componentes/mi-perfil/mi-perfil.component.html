@@ -16,6 +16,13 @@
     </div>
 
     <div *ngIf="usuario?.tipoUsuario === 'paciente' && historial.length > 0" class="btn-container">
+      <div class="filter-container">
+        <label for="especialidadSelect">Filtrar por Especialidad:</label>
+        <select id="especialidadSelect" [(ngModel)]="especialidadSeleccionada" class="filter-select">
+          <option value="">Todas</option>
+          <option *ngFor="let especialidad of especialidades">{{ especialidad }}</option>
+        </select>
+      </div>
       <div appCaptcha (captchaResolved)="onCaptchaResolved($event)"></div>
       <button
       class="btn-historia-clinica"

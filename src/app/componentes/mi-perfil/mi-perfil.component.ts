@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth.service';
 import { Usuario } from '../../clases/usuario';
 import { CommonModule } from '@angular/common';
@@ -16,112 +16,89 @@ import { CaptchaDirective } from '../../directivas/captcha.directive';
   standalone: true,
   templateUrl: './mi-perfil.component.html',
   styleUrls: ['./mi-perfil.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, MisHorariosComponent, HistoriaClinicaComponent, CaptchaDirective] // Asegúrate de importar MisHorariosComponent
+  imports: [CommonModule, ReactiveFormsModule, MisHorariosComponent, HistoriaClinicaComponent, CaptchaDirective, FormsModule] // Asegúrate de importar MisHorariosComponent
 })
 export class MiPerfilComponent implements OnInit {
   usuario: Usuario | null = null;
   historial: any[] = [];
   logoUrl: string = '';
-  captchaValido: boolean = false; 
+  captchaValido: boolean = false;
+  especialidades: string[] = []; // Lista de especialidades disponibles
+  especialidadSeleccionada: string = ''; // Especialidad seleccionada por el usuario
 
   constructor(private authService: AuthService, private fb: FormBuilder, private firestore: Firestore) {}
 
   async ngOnInit(): Promise<void> {
     try {
-      // Obtener el perfil del usuario
       this.usuario = await this.authService.getUserProfile();
       if (this.usuario?.tipoUsuario === 'paciente') {
         this.historial = await this.cargarTurnos(this.usuario.uid);
-      } else {
-        console.warn('El usuario no es un paciente. Historia clínica no disponible.');
+
+        // Extraer especialidades únicas de los turnos
+        this.especialidades = Array.from(new Set(this.historial.map((turno) => turno.especialidad || '')));
       }
     } catch (error) {
       console.error('Error al obtener el perfil del usuario:', error);
     }
   }
 
-
-  onCaptchaResolved(isResolved: boolean): void {
-    this.captchaValido = isResolved; // Actualiza el estado del captcha
-    if (isResolved) {
-      console.log('CAPTCHA resuelto correctamente.');
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Captcha Incorrecto',
-        text: 'Por favor, resuelve correctamente el captcha para continuar.',
-        confirmButtonText: 'Entendido',
-      });
-    }
-  }
-
-
   async cargarTurnos(usuarioId: string): Promise<any[]> {
     const turnosRef = collection(this.firestore, 'turnos');
     const q = query(turnosRef, where('paciente', '==', usuarioId));
     const snapshot = await getDocs(q);
-  
-    const turnos = snapshot.docs.map(doc => {
+
+    const turnos = snapshot.docs.map((doc) => {
       const data = doc.data() as any;
       if (data.fecha && data.fecha.seconds) {
         data.fecha = new Date(data.fecha.seconds * 1000).toLocaleDateString();
       }
-      return {
-        id: doc.id,
-        ...data,
-      };
+      return { id: doc.id, ...data };
     });
-  
+
     for (let turno of turnos) {
-      // Obtener el nombre del especialista
       if (turno.especialista) {
         const especialistaRef = doc(this.firestore, 'usuarios', turno.especialista);
         const especialistaSnapshot = await getDoc(especialistaRef);
-        if (especialistaSnapshot.exists()) {
-          turno.especialistaNombre = especialistaSnapshot.data()['nombre'];
-        } else {
-          turno.especialistaNombre = 'Desconocido';
-        }
+        turno.especialistaNombre = especialistaSnapshot.exists()
+          ? especialistaSnapshot.data()['nombre']
+          : 'Desconocido';
       }
     }
-  
+
     return turnos;
   }
 
   async generarHistoriaClinicaPDF() {
     const logoUrl = 'https://cdn-icons-png.flaticon.com/512/75/75264.png';
-    
+
     if (this.captchaValido) {
-      
       try {
         const doc = new jsPDF();
-    
-        // Convierte la imagen a base64
+
         const logoBase64 = await this.toBase64(logoUrl);
-    
-        // Agrega el logo al PDF
         doc.addImage(logoBase64, 'PNG', 10, 10, 50, 30);
-    
-        // Título del informe
+
         doc.setFontSize(18);
         doc.setFont('helvetica', 'bold');
         doc.text('Historia Clínica', 80, 20);
-    
-        // Fecha de emisión
+
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
         doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()}`, 10, 50);
-    
-        // Información del paciente
+
         doc.text(`Paciente: ${this.usuario?.nombre} ${this.usuario?.apellido}`, 10, 60);
         doc.text(`DNI: ${this.usuario?.dni}`, 10, 70);
         doc.text(`Email: ${this.usuario?.email}`, 10, 80);
-    
-        // Tabla con los datos de la historia clínica
+
+        // Filtrar historial por especialidad seleccionada
+        const historialFiltrado = this.especialidadSeleccionada
+          ? this.historial.filter((turno) => turno.especialidad === this.especialidadSeleccionada)
+          : this.historial;
+
         autoTable(doc, {
           startY: 90,
           head: [['Fecha', 'Especialidad', 'Especialista', 'Diagnóstico', 'Reseña']],
-          body: this.historial.map(turno => [
+          body: historialFiltrado.map((turno) => [
             turno.fecha || 'N/A',
             turno.especialidad || 'N/A',
             turno.especialistaNombre || 'Desconocido',
@@ -137,24 +114,21 @@ export class MiPerfilComponent implements OnInit {
           bodyStyles: { textColor: 50 },
           columnStyles: { 4: { cellWidth: 'auto' } },
         });
-    
-        // Descargar el PDF
+
         doc.save(`Historia_Clinica_${this.usuario?.nombre}_${this.usuario?.apellido}.pdf`);
       } catch (error) {
         console.error('Error al generar el PDF:', error);
         Swal.fire('Error', 'No se pudo generar el PDF.', 'error');
       }
-    }else{
-
-      console.log('captcha invalido')
+    } else {
+      console.log('captcha invalido');
     }
   }
-  
-  // Método para convertir la imagen a Base64
+
   private toBase64(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'Anonymous'; // Evita problemas de CORS
+      img.crossOrigin = 'Anonymous';
       img.src = url;
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -168,4 +142,17 @@ export class MiPerfilComponent implements OnInit {
     });
   }
 
+  onCaptchaResolved(isResolved: boolean): void {
+    this.captchaValido = isResolved; // Actualiza el estado del captcha
+    if (isResolved) {
+      console.log('CAPTCHA resuelto correctamente.');
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Captcha Incorrecto',
+        text: 'Por favor, resuelve correctamente el captcha para continuar.',
+        confirmButtonText: 'Entendido',
+      });
+    }
+  }
 }
