@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
-import { Chart } from 'chart.js';
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  CategoryScale,
+} from 'chart.js';
 import moment from 'moment';
 
 @Component({
@@ -10,13 +18,16 @@ import moment from 'moment';
   standalone: true,
 })
 export class TurnosDiaComponent implements OnInit {
-  turnos: { fecha: string }[] = []; // Lista completa de turnos
-  turnosPorDia: Record<string, number> = {}; // Mapa de turnos por día
-  fechaInicio: Date | null = null; // Fecha inicial del filtro
-  fechaFin: Date | null = null; // Fecha final del filtro
-  chart: Chart | null = null; // Referencia al gráfico
+  turnos: { fecha: string }[] = [];
+  turnosPorDia: Record<string, number> = {};
+  fechaInicio: Date | null = null;
+  fechaFin: Date | null = null;
+  chart: Chart | null = null;
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore) {
+    // Registra los componentes de Chart.js necesarios
+    Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
+  }
 
   ngOnInit() {
     this.cargarTurnos();
@@ -26,15 +37,12 @@ export class TurnosDiaComponent implements OnInit {
     try {
       const turnosRef = collection(this.firestore, 'turnos');
       const snapshot = await getDocs(turnosRef);
-  
+
       this.turnos = snapshot.docs.map((doc) => {
         const turnoData = doc.data();
-        const fechaTimestamp = turnoData['fecha']; // Este es el objeto Timestamp
-  
-        // Verifica si fecha es un Timestamp y conviértelo a Date
+        const fechaTimestamp = turnoData['fecha'];
         const fecha = fechaTimestamp?.toDate ? fechaTimestamp.toDate() : null;
-  
-  
+
         return { fecha: fecha ? fecha.toISOString().split('T')[0] : 'Fecha inválida' };
       });
 
@@ -45,21 +53,11 @@ export class TurnosDiaComponent implements OnInit {
     }
   }
 
-  parsearFecha(fechaString: string): string | null {
-    try {
-      const fecha = moment(fechaString, 'D [de] MMMM [de] YYYY, h:mm:ss A');
-      return fecha.isValid() ? fecha.format('YYYY-MM-DD') : null;
-    } catch (error) {
-      console.error('Error al parsear la fecha:', fechaString, error);
-      return null;
-    }
-  }
-
   calcularTurnosPorDia(turnos: { fecha: string }[]) {
-    this.turnosPorDia = {}; // Reiniciamos los datos
-  
+    this.turnosPorDia = {};
+
     turnos.forEach((turno) => {
-      const fecha = turno.fecha; // Ya está en formato legible
+      const fecha = turno.fecha;
       this.turnosPorDia[fecha] = (this.turnosPorDia[fecha] || 0) + 1;
     });
   }
@@ -78,16 +76,11 @@ export class TurnosDiaComponent implements OnInit {
 
   aplicarFiltro() {
     if (!this.fechaInicio || !this.fechaFin) {
-      // Si no hay filtro, mostramos todos los datos
       this.calcularTurnosPorDia(this.turnos);
     } else {
-      // Aplicamos el filtro por rango de fechas
       const turnosFiltrados = this.turnos.filter((turno) => {
         const fechaTurno = new Date(turno.fecha);
-        return (
-          fechaTurno >= this.fechaInicio! &&
-          fechaTurno <= this.fechaFin!
-        );
+        return fechaTurno >= this.fechaInicio! && fechaTurno <= this.fechaFin!;
       });
 
       this.calcularTurnosPorDia(turnosFiltrados);
@@ -99,32 +92,42 @@ export class TurnosDiaComponent implements OnInit {
   renderChart() {
     const labels = Object.keys(this.turnosPorDia);
     const values = Object.values(this.turnosPorDia);
-  
-  
+
     if (this.chart) {
-      this.chart.destroy(); // Destruimos el gráfico anterior
+      this.chart.destroy();
     }
-  
+
     const ctx = document.getElementById('turnosDiaChart') as HTMLCanvasElement;
     this.chart = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels,
         datasets: [
           {
             label: 'Turnos por Día',
             data: values,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
+            borderWidth: 2,
+            fill: true,
           },
         ],
       },
       options: {
         responsive: true,
         scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Fecha',
+            },
+          },
           y: {
             beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Cantidad de Turnos',
+            },
           },
         },
       },
