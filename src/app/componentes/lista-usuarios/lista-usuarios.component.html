@@ -27,7 +27,13 @@
       />
       <div class="card-body">
         <h4>{{ usuario.nombre | especialistaNombre: usuario.apellido: usuario.tipoUsuario }}</h4>
-        <p>Email: {{ usuario.email }}</p>
+        <p *ngIf="usuario.email">
+          Email: 
+          <span class="tooltip-container">
+            {{ usuario.email | censurarEmail:4 }}
+            <span class="tooltip-text">{{ usuario.email }}</span>
+          </span>
+        </p>
         <p>Tipo de Usuario: {{ usuario.tipoUsuario }}</p>
 
         <!-- Botones condicionales -->

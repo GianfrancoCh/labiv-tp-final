@@ -10,6 +10,7 @@ import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-cl
 import { HighlightUserTypeDirective } from '../../directivas/usuario-highlight.directive';
 import { NombreEspecialistaPipe } from '../../pipes/nombre-especialista.pipe';
 import { HoverEffectDirective } from '../../directivas/hover-effect.directive';
+import { CensurarEmailPipe } from '../../pipes/censurar-email.pipe';
 
 interface Especialidad {
   id: string;
@@ -21,7 +22,7 @@ interface Especialidad {
   standalone: true,
   templateUrl: './lista-usuarios.component.html',
   styleUrls: ['./lista-usuarios.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent, HighlightUserTypeDirective, NombreEspecialistaPipe, HoverEffectDirective]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HistoriaClinicaComponent, HighlightUserTypeDirective, NombreEspecialistaPipe, HoverEffectDirective, CensurarEmailPipe]
 })
 export class ListaUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];

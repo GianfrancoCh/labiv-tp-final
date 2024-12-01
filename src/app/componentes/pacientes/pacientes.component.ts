@@ -4,11 +4,12 @@ import { Firestore, collection, query, where, getDocs, doc, getDoc } from '@angu
 import { Usuario } from '../../clases/usuario';
 import { AuthService } from '../../servicios/auth.service';
 import { HistoriaClinicaComponent } from '../turnos/historia-clinica/historia-clinica.component';
+import { CapitalizarPipe } from '../../pipes/capitalizar-pipe.pipe';
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, HistoriaClinicaComponent],
+  imports: [CommonModule, HistoriaClinicaComponent, CapitalizarPipe],
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
 })

@@ -8,7 +8,7 @@
         class="card-img"
       />
       <div class="card-body">
-        <h4>{{ paciente.nombre }} {{ paciente.apellido }}</h4>
+        <h4>{{ paciente.nombre | capitalize }} {{ paciente.apellido | capitalize }}</h4>
         <p>Edad: {{ paciente.edad }}</p>
         <p>DNI: {{ paciente.dni }}</p>
         <p>Email: {{ paciente.email }}</p>
