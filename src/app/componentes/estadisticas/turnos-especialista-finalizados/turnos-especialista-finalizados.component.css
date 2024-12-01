@@ -1,0 +1,28 @@
+.turnos-especialista-finalizados-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filters {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .filters label {
+    font-weight: bold;
+  }
+  
+  canvas {
+    width: 100%;
+    max-width: 600px;
+  }
+  

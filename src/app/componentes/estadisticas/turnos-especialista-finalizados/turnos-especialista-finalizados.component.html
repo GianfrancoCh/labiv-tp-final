@@ -1,0 +1,31 @@
+<div class="turnos-especialista-finalizados-container">
+  <h2>Turnos Finalizados por Médico</h2>
+
+  <div class="filters">
+    <label for="fechaInicio">Fecha Inicio:</label>
+    <input
+      type="date"
+      id="fechaInicio"
+      (change)="onFechaInicioChange($event)"
+    />
+
+    <input
+      type="date"
+      id="fechaFin"
+      (change)="onFechaFinChange($event)"
+    />
+
+    <label for="especialista">Especialista:</label>
+    <select
+      id="especialista"
+      [(ngModel)]="especialistaSeleccionado"
+      (change)="aplicarFiltro()"
+    >
+      <option *ngFor="let especialista of especialistas" [value]="especialista.id">
+        {{ especialista.nombre }}
+      </option>
+    </select>
+  </div>
+
+  <canvas id="graficoTurnosEspecialista"></canvas>
+</div>

@@ -1,11 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Firestore, collection, getDocs, query, orderBy } from '@angular/fire/firestore';
+import { LogsComponent } from './logs/logs.component';
+import { TurnosEspecialidadComponent } from "./turnos-especialidad/turnos-especialidad.component";
+import { TurnosDiaComponent } from './turnos-dia/turnos-dia.component';
+import { TurnosEspecialistaComponent } from './turnos-especialista/turnos-especialista.component';
+import { TurnosEspecialistaFinalizadosComponent } from './turnos-especialista-finalizados/turnos-especialista-finalizados.component';
 
 @Component({
   selector: 'app-estadisticas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LogsComponent, TurnosEspecialidadComponent, TurnosDiaComponent,TurnosEspecialistaComponent, TurnosEspecialistaFinalizadosComponent],
   templateUrl: './estadisticas.component.html',
   styleUrls: ['./estadisticas.component.css'],
 })
@@ -15,28 +20,9 @@ export class EstadisticasComponent implements OnInit {
 
   constructor(private firestore: Firestore) {}
 
-  async ngOnInit() {
-    await this.cargarLogs();
-  }
+  async ngOnInit() {}
+    
 
-  async cargarLogs() {
-    if (this.loading) return;
 
-    this.loading = true;
 
-    try {
-      const loginsRef = collection(this.firestore, 'logins');
-      const q = query(loginsRef, orderBy('fecha', 'desc')); // Sin límites
-      const snapshot = await getDocs(q);
-
-      this.logs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-    } catch (error) {
-      console.error('Error al cargar los logs:', error);
-    } finally {
-      this.loading = false;
-    }
-  }
 }
