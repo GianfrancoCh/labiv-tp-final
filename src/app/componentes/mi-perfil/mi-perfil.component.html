@@ -16,9 +16,13 @@
     </div>
 
     <div *ngIf="usuario?.tipoUsuario === 'paciente' && historial.length > 0" class="btn-container">
-      <button class="btn-historia-clinica" (click)="generarHistoriaClinicaPDF()">
-        Descargar Historia Clínica
-      </button>
+      <div appCaptcha (captchaResolved)="onCaptchaResolved($event)"></div>
+      <button
+      class="btn-historia-clinica"
+      [disabled]="!captchaValido" 
+      (click)="generarHistoriaClinicaPDF()">
+      Descargar Historia Clínica
+    </button>
     </div>
   </div>
   <!-- Historia Clínica -->

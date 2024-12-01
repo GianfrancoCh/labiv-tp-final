@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { routeAnimations } from './animaciones/animacion';
 import { NavbarBotonesDirective } from './directivas/navbar-botones.directive';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,

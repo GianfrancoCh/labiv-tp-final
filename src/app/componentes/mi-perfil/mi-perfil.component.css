@@ -8,6 +8,7 @@
 }
 
 .perfil-container {
+  margin-top: 50px;
   display: flex;
   flex-direction: row;
   gap: 30px; 
@@ -18,6 +19,7 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   font-family: 'Roboto', Arial, sans-serif;
+  border: 2px solid #000000;
 }
 
 
@@ -79,6 +81,12 @@
   overflow: auto;
 }
 
+.btn-historia-clinica:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
 /* Mis Horarios */
 .mis-horarios-container {
   flex: 2;
@@ -90,10 +98,11 @@
 
 .btn-container {
   display: flex;
-  justify-content: center;
-  margin-top: 20px; 
+  flex-direction: column; 
+  align-items: center;
+  gap: 15px; 
+  margin-top: 20px;
 }
-
 
 .btn-historia-clinica {
   padding: 12px 24px;
@@ -105,12 +114,32 @@
   transition: transform 0.2s, background-color 0.3s;
   background-color: #34568b;
   color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
 }
 
 .btn-historia-clinica:hover {
-  background-color: #274b72; 
-  transform: scale(1.05); 
+  background-color: #274b72;
+  transform: scale(1.05);
 }
+
+.btn-historia-clinica:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
+.captcha-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
 
 @media (max-width: 768px) {
   .perfil-container {
