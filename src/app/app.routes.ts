@@ -21,15 +21,15 @@ export const routes: Routes = [
     { path: 'ingresar', component: LoginComponent, data: {animation: 'LoginPage'} },
     { path: 'registro', component: RegistroComponent, data: {animation: 'RegisterPage'} },    
     { path: 'usuarios', component: ListaUsuariosComponent, canActivate: [AdminGuard], data: {animation: 'UsuariosPage'} },
-    { path: 'mi-perfil', component: MiPerfilComponent},
+    { path: 'mi-perfil', component: MiPerfilComponent, data: {animation: 'MiPerfil'} },
     { path: 'mis-turnos', component: TurnosComponent, canActivate: [TurnosGuard]},
-    { path: 'mis-turnos-paciente', component: MisTurnosPacienteComponent },
-    { path: 'mis-turnos-especialista', component: MisTurnosEspecialistaComponent },  
-    { path: 'solicitar-turno', component: SolicitarTurnoComponent },   
-    { path: 'turnos', component: TurnosComponent, canActivate: [AdminGuard] },   
+    { path: 'mis-turnos-paciente', component: MisTurnosPacienteComponent, data: {animation: 'MisTurnosPaciente'}  },
+    { path: 'mis-turnos-especialista', component: MisTurnosEspecialistaComponent, data: {animation: 'MisTurnosEspecialista'} },  
+    { path: 'solicitar-turno', component: SolicitarTurnoComponent, data: {animation: 'SolicitarTurno'} },   
+    { path: 'turnos', component: TurnosComponent, canActivate: [AdminGuard], data: {animation: 'Turnos'}},   
     { path: 'estadisticas', component: EstadisticasComponent, canActivate: [AdminGuard], data: {animation: 'Estadisticas'} },   
-    { path: 'pacientes', component: PacientesComponent},                    
-    { path: '**', component: PageNotFoundComponent },
+    { path: 'pacientes', component: PacientesComponent, data: {animation: 'Pacientes'}},                    
+    { path: '**', component: PageNotFoundComponent,data: {animation: 'NotFound'} },
     
 ];
 
