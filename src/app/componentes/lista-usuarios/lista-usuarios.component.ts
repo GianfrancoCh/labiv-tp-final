@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Firestore, collection, doc, updateDoc, getDocs, addDoc, query, where} from '@angular/fire/firestore';
+import { Firestore, collection, updateDoc, getDocs, addDoc, query, where, doc, getDoc} from '@angular/fire/firestore';
 import { AuthService } from '../../servicios/auth.service'; // Importa tu servicio de autenticación
 import Swal from 'sweetalert2';
 import { Usuario } from '../../clases/usuario'; // Importa la interfaz de Usuario
@@ -57,42 +57,65 @@ export class ListaUsuariosComponent implements OnInit {
 
   async descargarTurnos(usuario: Usuario) {
     try {
-      // Obtén los turnos del usuario desde Firestore
+      if (usuario.tipoUsuario !== 'paciente') {
+        Swal.fire('Error', 'Solo se pueden descargar los turnos de los pacientes.', 'error');
+        return;
+      }
+  
       const turnosRef = collection(this.firestore, 'turnos');
       const q = query(turnosRef, where('paciente', '==', usuario.id));
       const snapshot = await getDocs(q);
   
       if (snapshot.empty) {
-        Swal.fire('Sin turnos', 'Este usuario no tiene turnos registrados.', 'info');
+        Swal.fire('Sin turnos', 'Este paciente no tiene turnos registrados.', 'info');
         return;
       }
   
-      // Mapea los turnos a un formato adecuado
-      const turnosData = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          Fecha: data['fecha']?.toDate?.()?.toLocaleString() || data['fecha'],
-          Especialidad: data['especialidad'],
-          Especialista: data['especialistaNombre'],
-          Detalle: data['detalle']
-        };
-      });
+      const turnosData = [];
   
-      // Crea una hoja de trabajo
+      for (const document of snapshot.docs) {
+        const data = document.data() as any;
+  
+        if (data.fecha && data.fecha.seconds) {
+          data.fecha = new Date(data.fecha.seconds * 1000).toLocaleString();
+        }
+  
+        // Obtener el nombre del especialista
+        if (data.especialista) {
+          const especialistaRef = doc(this.firestore, `usuarios/${data.especialista}`);
+          const especialistaSnapshot = await getDoc(especialistaRef);
+  
+          if (especialistaSnapshot.exists()) {
+            const especialistaData = especialistaSnapshot.data() as { nombre: string };
+            data.especialistaNombre = especialistaData?.nombre || 'Desconocido';
+          } else {
+            data.especialistaNombre = 'Desconocido';
+          }
+        } else {
+          data.especialistaNombre = 'No asignado';
+        }
+  
+        turnosData.push({
+          Fecha: data.fecha,
+          Especialidad: data.especialidad,
+          Especialista: data.especialistaNombre,
+          Estado: data.estado || 'Sin estado',
+        });
+      }
+  
+      // Exportar a Excel
       const hoja = XLSX.utils.json_to_sheet(turnosData);
-  
-      // Crea un libro de trabajo y agrega la hoja
       const libro = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(libro, hoja, `Turnos de ${usuario.nombre}`);
-  
-      // Descarga el archivo
       XLSX.writeFile(libro, `turnos-${usuario.nombre}-${usuario.apellido}.xlsx`);
+  
       Swal.fire('Descarga exitosa', 'El archivo de turnos se ha descargado.', 'success');
     } catch (error) {
       console.error('Error al descargar turnos:', error);
       Swal.fire('Error', 'No se pudieron descargar los turnos.', 'error');
     }
   }
+  
 
   mostrarHistoriaClinica(usuario: Usuario): void {
     console.log(`Mostrando historia clínica del paciente: ${usuario.id}`);

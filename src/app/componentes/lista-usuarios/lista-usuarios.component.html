@@ -41,6 +41,9 @@
           <button *ngIf="usuario.tipoUsuario === 'paciente'" (click)="mostrarHistoriaClinica(usuario)">
             {{ pacienteSeleccionado?.id === usuario.id ? 'Ocultar' : 'Ver' }} Historia Clínica
           </button>
+          <button *ngIf="usuario.tipoUsuario === 'paciente'" (click)="descargarTurnos(usuario)">
+            Descargar Turnos
+          </button>
           <button *ngIf="usuario.tipoUsuario === 'especialista' && usuario.aprobado" (click)="inhabilitarEspecialista(usuario)">
             Inhabilitar
           </button>
